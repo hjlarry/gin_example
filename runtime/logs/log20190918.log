@@ -1,2 +1,6 @@
 [INFO][article.go:77]2019/09/18 10:50:47 [err.key: %s, err.message: %s state 状态只允许0或1]
 [INFO][article.go:77]2019/09/18 10:50:47 [err.key: %s, err.message: %s tag_id 标签ID必须大于0]
+[INFO][article.go:77]2019/09/18 11:06:42 [err.key: %s, err.message: %s state 状态只允许0或1]
+[INFO][article.go:77]2019/09/18 11:06:42 [err.key: %s, err.message: %s tag_id 标签ID必须大于0]
+[INFO][article.go:77]2019/09/18 11:10:01 [err.key: %s, err.message: %s state 状态只允许0或1]
+[INFO][article.go:77]2019/09/18 11:10:01 [err.key: %s, err.message: %s tag_id 标签ID必须大于0]
