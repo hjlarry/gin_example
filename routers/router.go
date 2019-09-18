@@ -2,7 +2,7 @@ package routers
 
 import (
 	"../middleware/jwt"
-	"../setting"
+	"../pkg/setting"
 	"./api"
 	v1 "./api/v1"
 	"github.com/gin-gonic/gin"

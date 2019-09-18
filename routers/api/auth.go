@@ -7,9 +7,9 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 
-	"../../e"
 	"../../models"
-	"../../util"
+	"../../pkg/e"
+	"../../pkg/util"
 )
 
 type auth struct {

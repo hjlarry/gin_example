@@ -8,10 +8,10 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 
-	"../../../e"
 	"../../../models"
-	"../../../setting"
-	"../../../util"
+	"../../../pkg/e"
+	"../../../pkg/setting"
+	"../../../pkg/util"
 )
 
 //获取单个文章
