@@ -1,12 +1,12 @@
 package routers
 
 import (
-	_ "../docs"
+	_ "gin_example/docs"
 
-	"../middleware/jwt"
-	"../pkg/setting"
-	"./api"
-	v1 "./api/v1"
+	"gin_example/middleware/jwt"
+	"gin_example/pkg/setting"
+	"gin_example/routers/api"
+	v1 "gin_example/routers/api/v1"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"

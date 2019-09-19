@@ -3,14 +3,14 @@ package v1
 import (
 	"net/http"
 
-	"github.com/Unknwon/com"
+	"github.com/unknwon/com"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 
-	"../../../models"
-	"../../../pkg/e"
-	"../../../pkg/setting"
-	"../../../pkg/util"
+	"gin_example/models"
+	"gin_example/pkg/e"
+	"gin_example/pkg/setting"
+	"gin_example/pkg/util"
 )
 
 //获取多个文章标签
