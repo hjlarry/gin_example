@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"gin_example/models"
+	"gin_example/pkg/logging"
 	"gin_example/pkg/setting"
 	"gin_example/routers"
 )
@@ -17,6 +18,7 @@ import (
 func main() {
 	setting.Setup()
 	models.Setup()
+	logging.Setup()
 
 	router := routers.InitRouter()
 
