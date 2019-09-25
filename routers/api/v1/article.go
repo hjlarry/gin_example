@@ -3,9 +3,9 @@ package v1
 import (
 	"net/http"
 
-	"github.com/unknwon/com"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
+	"github.com/unknwon/com"
 
 	"gin_example/models"
 	"gin_example/pkg/e"
@@ -110,6 +110,7 @@ func AddArticle(c *gin.Context) {
 	title := c.Query("title")
 	desc := c.Query("desc")
 	content := c.Query("content")
+	coverImageURL := c.Query("cover_image_url")
 	createdBy := c.Query("created_by")
 	state := com.StrTo(c.DefaultQuery("state", "0")).MustInt()
 
@@ -129,6 +130,7 @@ func AddArticle(c *gin.Context) {
 			data["title"] = title
 			data["desc"] = desc
 			data["content"] = content
+			data["cover_image_url"] = coverImageURL
 			data["created_by"] = createdBy
 			data["state"] = state
 
@@ -170,6 +172,7 @@ func EditArticle(c *gin.Context) {
 	title := c.Query("title")
 	desc := c.Query("desc")
 	content := c.Query("content")
+	coverImageURL := c.Query("cover_image_url")
 	modifiedBy := c.Query("modified_by")
 
 	var state int = -1
@@ -201,6 +204,9 @@ func EditArticle(c *gin.Context) {
 				}
 				if content != "" {
 					data["content"] = content
+				}
+				if coverImageURL != "" {
+					data["cover_image_url"] = coverImageURL
 				}
 
 				data["modified_by"] = modifiedBy

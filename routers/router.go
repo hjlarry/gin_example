@@ -1,10 +1,12 @@
 package routers
 
 import (
-	_ "gin_example/docs"
+	"net/http"
 
+	_ "gin_example/docs"
 	"gin_example/middleware/jwt"
 	"gin_example/pkg/setting"
+	"gin_example/pkg/upload"
 	"gin_example/routers/api"
 	v1 "gin_example/routers/api/v1"
 
@@ -18,6 +20,9 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	gin.SetMode(setting.ServerSetting.RunMode)
+
+	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
+
 	url := ginSwagger.URL("http://127.0.0.1:8080/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
