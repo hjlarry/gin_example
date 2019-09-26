@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	_ "gin_example/docs"
-	"gin_example/middleware/jwt"
 	"gin_example/pkg/setting"
 	"gin_example/pkg/upload"
 	"gin_example/routers/api"
@@ -29,7 +28,7 @@ func InitRouter() *gin.Engine {
 	r.GET("/auth", api.GetAuth)
 	r.POST("/upload", api.UploadImage)
 	apiv1 := r.Group("/api/v1")
-	apiv1.Use(jwt.JWT())
+	// apiv1.Use(jwt.JWT())
 	{
 		//获取标签列表
 		apiv1.GET("/tags", v1.GetTags)

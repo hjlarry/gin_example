@@ -48,6 +48,7 @@ var DatabaseSetting = &Database{}
 type Redis struct {
 	Host        string
 	Password    string
+	DB          int
 	MaxIdle     int
 	MaxActive   int
 	IdleTimeout time.Duration

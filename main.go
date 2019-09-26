@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"gin_example/models"
+	"gin_example/pkg/gredis"
 	"gin_example/pkg/logging"
 	"gin_example/pkg/setting"
 	"gin_example/routers"
@@ -19,6 +20,7 @@ func main() {
 	setting.Setup()
 	models.Setup()
 	logging.Setup()
+	gredis.Setup()
 
 	router := routers.InitRouter()
 

@@ -17,7 +17,8 @@ func Setup() error {
 		MaxActive:   setting.RedisSetting.MaxActive,
 		IdleTimeout: setting.RedisSetting.IdleTimeout,
 		Dial: func() (redis.Conn, error) {
-			c, err := redis.Dial("tcp", setting.RedisSetting.Host)
+			dialOption := redis.DialDatabase(setting.RedisSetting.DB)
+			c, err := redis.Dial("tcp", setting.RedisSetting.Host, dialOption)
 			if err != nil {
 				return nil, err
 			}
@@ -42,7 +43,6 @@ func Setup() error {
 func Set(key string, data interface{}, time int) error {
 	conn := RedisConn.Get()
 	defer conn.Close()
-
 	value, err := json.Marshal(data)
 	if err != nil {
 		return err
@@ -76,7 +76,6 @@ func Exists(key string) bool {
 func Get(key string) ([]byte, error) {
 	conn := RedisConn.Get()
 	defer conn.Close()
-
 	reply, err := redis.Bytes(conn.Do("GET", key))
 	if err != nil {
 		return nil, err

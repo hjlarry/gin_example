@@ -8,10 +8,12 @@ import (
 	"github.com/unknwon/com"
 
 	"gin_example/models"
+	"gin_example/pkg/app"
 	"gin_example/pkg/e"
 	"gin_example/pkg/logging"
 	"gin_example/pkg/setting"
 	"gin_example/pkg/util"
+	"gin_example/service/article_service"
 )
 
 // @Summary Get a single article
@@ -21,31 +23,36 @@ import (
 // @Failure 500 {object} app.Response
 // @Router /api/v1/articles/{id} [get]
 func GetArticle(c *gin.Context) {
+	appG := app.Gin{c}
 	id := com.StrTo(c.Param("id")).MustInt()
 
 	valid := validation.Validation{}
 	valid.Min(id, 1, "id").Message("ID必须大于0")
 
-	code := e.INVALID_PARAMS
-	var data interface{}
-	if !valid.HasErrors() {
-		if models.ExistArticleByID(id) {
-			data = models.GetArticle(id)
-			code = e.SUCCESS
-		} else {
-			code = e.ERROR_NOT_EXIST_ARTICLE
-		}
-	} else {
-		for _, err := range valid.Errors {
-			logging.Info("err.key: %s, err.message: %s", err.Key, err.Message)
-		}
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": data,
-	})
+	articleService := article_service.Article{ID: id}
+	exists, err := articleService.ExistByID()
+	if err != nil {
+		appG.Response(http.StatusOK, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
+		return
+	}
+	if !exists {
+		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
+		return
+	}
+
+	article, err := articleService.Get()
+	if err != nil {
+		appG.Response(http.StatusOK, e.ERROR_GET_ARTICLE_FAIL, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, article)
 }
 
 // @Summary Get multiple articles
@@ -190,7 +197,8 @@ func EditArticle(c *gin.Context) {
 
 	code := e.INVALID_PARAMS
 	if !valid.HasErrors() {
-		if models.ExistArticleByID(id) {
+		exist, _ := models.ExistArticleByID(id)
+		if exist {
 			if models.ExistTagByID(tagId) {
 				data := make(map[string]interface{})
 				if tagId > 0 {
@@ -246,7 +254,8 @@ func DeleteArticle(c *gin.Context) {
 
 	code := e.INVALID_PARAMS
 	if !valid.HasErrors() {
-		if models.ExistArticleByID(id) {
+		exist, _ := models.ExistArticleByID(id)
+		if exist {
 			models.DeleteArticle(id)
 			code = e.SUCCESS
 		} else {
