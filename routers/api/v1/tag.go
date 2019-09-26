@@ -8,38 +8,48 @@ import (
 	"github.com/unknwon/com"
 
 	"gin_example/models"
+	"gin_example/pkg/app"
 	"gin_example/pkg/e"
 	"gin_example/pkg/setting"
 	"gin_example/pkg/util"
+	"gin_example/service/tag_service"
 )
 
 //获取多个文章标签
 func GetTags(c *gin.Context) {
+	appG := app.Gin{C: c}
 	name := c.Query("name")
+	state := -1
 
-	maps := make(map[string]interface{})
-	data := make(map[string]interface{})
-
-	if name != "" {
-		maps["name"] = name
-	}
-
-	var state int = -1
 	if arg := c.Query("state"); arg != "" {
 		state = com.StrTo(arg).MustInt()
-		maps["state"] = state
 	}
 
-	code := e.SUCCESS
+	tagService := tag_service.Tag{
+		Name:     name,
+		State:    state,
+		PageNum:  util.GetPage(c),
+		PageSize: setting.AppSetting.PageSize,
+	}
 
-	data["lists"] = models.GetTags(util.GetPage(c), setting.AppSetting.PageSize, maps)
-	data["total"] = models.GetTagTotal(maps)
+	total, err := tagService.Count()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_COUNT_TAG_FAIL, nil)
+		return
+	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": data,
-	})
+	tags, err := tagService.GetAll()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_GET_TAGS_FAIL, nil)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["lists"] = tags
+	data["total"] = total
+
+	appG.Response(http.StatusOK, e.SUCCESS, data)
+
 }
 
 func AddTag(c *gin.Context) {

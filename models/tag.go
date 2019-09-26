@@ -15,16 +15,19 @@ type Tag struct {
 	State      int    `json:"state"`
 }
 
-func GetTags(pageNum int, pageSize int, maps interface{}) (tags []Tag) {
-	db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags)
-
-	return
+func GetTags(pageNum int, pageSize int, maps interface{}) ([]*Tag, error) {
+	var tags []*Tag
+	err := db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags).Error
+	if err != nil {
+		return nil, err
+	}
+	return tags, nil
 }
 
-func GetTagTotal(maps interface{}) (count int) {
-	db.Model(&Tag{}).Where(maps).Count(&count)
-
-	return
+func GetTagTotal(maps interface{}) (int, error) {
+	count := 0
+	err := db.Model(&Tag{}).Where(maps).Count(&count).Error
+	return count, err
 }
 
 func ExistTagByName(name string) bool {
