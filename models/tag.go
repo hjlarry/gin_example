@@ -30,46 +30,52 @@ func GetTagTotal(maps interface{}) (int, error) {
 	return count, err
 }
 
-func ExistTagByName(name string) bool {
+func ExistTagByName(name string) (bool, error) {
 	var tag Tag
-	db.Select("id").Where("name = ?", name).First(&tag)
+	err := db.Select("id").Where("name = ?", name).First(&tag).Error
+	if err != nil {
+		return false, err
+	}
 	if tag.ID > 0 {
-		return true
+		return true, nil
 	}
 
-	return false
+	return false, nil
 }
 
-func AddTag(name string, state int, createdBy string) bool {
-	db.Create(&Tag{
-		Name:      name,
-		State:     state,
-		CreatedBy: createdBy,
-	})
+func AddTag(data map[string]interface{}) error {
+	err := db.Create(&Tag{
+		Name:      data["name"].(string),
+		CreatedBy: data["created_by"].(string),
+		State:     data["state"].(int),
+	}).Error
 
-	return true
+	return err
 }
 
-func ExistTagByID(id int) bool {
+func ExistTagByID(id int) (bool, error) {
 	var tag Tag
-	db.Select("id").Where("id = ?", id).First(&tag)
+	err := db.Select("id").Where("id = ?", id).First(&tag).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return false, err
+	}
 	if tag.ID > 0 {
-		return true
+		return true, nil
 	}
 
-	return false
+	return false, nil
 }
 
-func DeleteTag(id int) bool {
-	db.Where("id = ?", id).Delete(&Tag{})
+func DeleteTag(id int) error {
+	err := db.Where("id = ?", id).Delete(&Tag{}).Error
 
-	return true
+	return err
 }
 
-func EditTag(id int, data interface{}) bool {
-	db.Model(&Tag{}).Where("id = ?", id).Updates(data)
+func EditTag(id int, data interface{}) error {
+	err := db.Model(&Tag{}).Where("id = ?", id).Updates(data).Error
 
-	return true
+	return err
 }
 
 func (tag *Tag) BeforeCreate(scope *gorm.Scope) error {

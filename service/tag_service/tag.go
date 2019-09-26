@@ -46,6 +46,14 @@ func (t *Tag) GetAll() ([]*models.Tag, error) {
 	return tags, nil
 }
 
+func (t *Tag) ExistByID() (bool, error) {
+	return models.ExistTagByID(t.ID)
+}
+
+func (t *Tag) ExistByName() (bool, error) {
+	return models.ExistTagByName(t.Name)
+}
+
 func (t *Tag) Count() (int, error) {
 	return models.GetTagTotal(t.getMaps())
 }
@@ -58,4 +66,32 @@ func (t *Tag) getMaps() map[string]interface{} {
 	}
 
 	return maps
+}
+
+func (t *Tag) Add() error {
+	tag := map[string]interface{}{
+		"name":       t.Name,
+		"created_by": t.CreatedBy,
+		"state":      t.State,
+	}
+	if err := models.AddTag(tag); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (t *Tag) Edit() error {
+	tag := map[string]interface{}{
+		"name":        t.Name,
+		"modified_by": t.ModifiedBy,
+		"state":       t.State,
+	}
+	if err := models.EditTag(t.ID, tag); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (t *Tag) Delete() error {
+	return models.DeleteTag(t.ID)
 }

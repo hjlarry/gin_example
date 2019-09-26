@@ -80,14 +80,14 @@ func GetArticle(id int) (*Article, error) {
 	return &article, err
 }
 
-func EditArticle(id int, data interface{}) bool {
-	db.Model(&Article{}).Where("id = ?", id).Updates(data)
+func EditArticle(id int, data interface{}) error {
+	err := db.Model(&Article{}).Where("id = ?", id).Updates(data).Error
 
-	return true
+	return err
 }
 
-func AddArticle(data map[string]interface{}) bool {
-	db.Create(&Article{
+func AddArticle(data map[string]interface{}) error {
+	err := db.Create(&Article{
 		TagID:         data["tag_id"].(int),
 		Title:         data["title"].(string),
 		Desc:          data["desc"].(string),
@@ -95,13 +95,12 @@ func AddArticle(data map[string]interface{}) bool {
 		CoverImageUrl: data["cover_image_url"].(string),
 		CreatedBy:     data["created_by"].(string),
 		State:         data["state"].(int),
-	})
+	}).Error
 
-	return true
+	return err
 }
 
-func DeleteArticle(id int) bool {
-	db.Where("id = ?", id).Delete(Article{})
-
-	return true
+func DeleteArticle(id int) error {
+	err := db.Where("id = ?", id).Delete(Article{}).Error
+	return err
 }
