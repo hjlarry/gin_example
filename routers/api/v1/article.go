@@ -4,11 +4,13 @@ import (
 	"net/http"
 
 	"github.com/astaxie/beego/validation"
+	"github.com/boombuler/barcode/qr"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
 
 	"gin_example/pkg/app"
 	"gin_example/pkg/e"
+	"gin_example/pkg/qrcode"
 	"gin_example/pkg/setting"
 	"gin_example/pkg/util"
 	"gin_example/service/article_service"
@@ -273,6 +275,23 @@ func DeleteArticle(c *gin.Context) {
 	err = articleService.Delete()
 	if err != nil {
 		appG.Response(http.StatusOK, e.ERROR_DELETE_ARTICLE_FAIL, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
+}
+
+const (
+	QRCODE_URL = "https://baidu.com"
+)
+
+func GenerateArticlePoster(c *gin.Context) {
+	appG := app.Gin{c}
+	qrc := qrcode.NewQrCode(QRCODE_URL, 300, 300, qr.M, qr.Auto)
+	path := qrcode.GetQrCodeFullPath()
+	_, _, err := qrc.Encode(path)
+	if err != nil {
+		appG.Response(http.StatusOK, e.ERROR, nil)
 		return
 	}
 
