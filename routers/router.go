@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	_ "gin_example/docs"
+	"gin_example/pkg/export"
 	"gin_example/pkg/setting"
 	"gin_example/pkg/upload"
 	"gin_example/routers/api"
@@ -21,6 +22,7 @@ func InitRouter() *gin.Engine {
 	gin.SetMode(setting.ServerSetting.RunMode)
 
 	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
+	r.StaticFS("/export", http.Dir(export.GetExcelFullPath()))
 
 	url := ginSwagger.URL("http://127.0.0.1:8080/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
@@ -38,6 +40,8 @@ func InitRouter() *gin.Engine {
 		apiv1.PUT("/tags/:id", v1.EditTag)
 		//删除指定标签
 		apiv1.DELETE("/tags/:id", v1.DeleteTag)
+
+		r.POST("/tags/export", v1.ExportTag)
 
 		//获取文章列表
 		apiv1.GET("/articles", v1.GetArticles)
