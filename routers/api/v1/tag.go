@@ -60,7 +60,7 @@ type AddTagForm struct {
 }
 
 func AddTag(c *gin.Context) {
-	appG := app.Gin{c}
+	appG := app.Gin{C: c}
 	var form AddTagForm
 
 	httpCode, errCode := app.BindAndValid(c, &form)

@@ -24,7 +24,7 @@ import (
 // @Failure 500 {object} app.Response
 // @Router /api/v1/articles/{id} [get]
 func GetArticle(c *gin.Context) {
-	appG := app.Gin{c}
+	appG := app.Gin{C: c}
 	id := com.StrTo(c.Param("id")).MustInt()
 
 	valid := validation.Validation{}
@@ -62,7 +62,7 @@ func GetArticle(c *gin.Context) {
 // @Failure 500 {object} app.Response
 // @Router /api/v1/articles [get]
 func GetArticles(c *gin.Context) {
-	appG := app.Gin{c}
+	appG := app.Gin{C: c}
 	valid := validation.Validation{}
 
 	state := -1
@@ -132,7 +132,7 @@ type AddArticleForm struct {
 // @Failure 500 {object} app.Response
 // @Router /api/v1/articles [post]
 func AddArticle(c *gin.Context) {
-	appG := app.Gin{c}
+	appG := app.Gin{C: c}
 	var form AddArticleForm
 
 	httpCode, errCode := app.BindAndValid(c, &form)
@@ -194,7 +194,7 @@ type EditArticleForm struct {
 // @Failure 500 {object} app.Response
 // @Router /api/v1/articles/{id} [put]
 func EditArticle(c *gin.Context) {
-	appG := app.Gin{c}
+	appG := app.Gin{C: c}
 	var form EditArticleForm
 
 	httpCode, errCode := app.BindAndValid(c, &form)
@@ -250,7 +250,7 @@ func EditArticle(c *gin.Context) {
 // @Failure 500 {object} app.Response
 // @Router /api/v1/articles/{id} [delete]
 func DeleteArticle(c *gin.Context) {
-	appG := app.Gin{c}
+	appG := app.Gin{C: c}
 	valid := validation.Validation{}
 	id := com.StrTo(c.Param("id")).MustInt()
 	valid.Min(id, 1, "id").Message("ID必须大于0")
@@ -286,7 +286,7 @@ const (
 )
 
 func GenerateArticlePoster(c *gin.Context) {
-	appG := app.Gin{c}
+	appG := app.Gin{C: c}
 	article := &article_service.Article{}
 	qr := qrcode.NewQrCode(QRCODE_URL, 300, 300, qr.M, qr.Auto) // 目前写死 gin 系列路径，可自行增加业务逻辑
 	posterName := article_service.GetPosterFlag() + "-" + qrcode.GetQrCodeFileName(qr.URL) + qr.GetQrCodeExt()
