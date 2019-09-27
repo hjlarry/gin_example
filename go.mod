@@ -10,6 +10,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-ini/ini v1.47.0
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/jinzhu/gorm v1.9.10
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
@@ -17,5 +18,6 @@ require (
 	github.com/swaggo/swag v1.5.1
 	github.com/tealeg/xlsx v1.0.3
 	github.com/unknwon/com v1.0.1
+	golang.org/x/image v0.0.0-20190910094157-69e4b8554b2a // indirect
 	gopkg.in/ini.v1 v1.47.0 // indirect
 )
