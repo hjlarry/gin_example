@@ -5,6 +5,7 @@ import (
 
 	_ "gin_example/docs"
 	"gin_example/pkg/export"
+	"gin_example/pkg/qrcode"
 	"gin_example/pkg/setting"
 	"gin_example/pkg/upload"
 	"gin_example/routers/api"
@@ -23,6 +24,7 @@ func InitRouter() *gin.Engine {
 
 	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
 	r.StaticFS("/export", http.Dir(export.GetExcelFullPath()))
+	r.StaticFS("/qrcode", http.Dir(qrcode.GetQrCodeFullPath()))
 
 	url := ginSwagger.URL("http://127.0.0.1:8080/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
