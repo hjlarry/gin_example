@@ -43,14 +43,17 @@ func ExistTagByName(name string) (bool, error) {
 	return false, nil
 }
 
-func AddTag(data map[string]interface{}) error {
-	err := db.Create(&Tag{
-		Name:      data["name"].(string),
-		CreatedBy: data["created_by"].(string),
-		State:     data["state"].(int),
-	}).Error
+func AddTag(name string, state int, createdBy string) error {
+	tag := Tag{
+		Name:      name,
+		State:     state,
+		CreatedBy: createdBy,
+	}
+	if err := db.Create(&tag).Error; err != nil {
+		return err
+	}
 
-	return err
+	return nil
 }
 
 func ExistTagByID(id int) (bool, error) {
