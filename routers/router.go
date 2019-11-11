@@ -10,6 +10,7 @@ import (
 	"gin_example/pkg/upload"
 	"gin_example/routers/api"
 	v1 "gin_example/routers/api/v1"
+	"gin_example/routers/home"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -20,14 +21,18 @@ func InitRouter() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
+	r.LoadHTMLGlob("templates/*")
 	gin.SetMode(setting.ServerSetting.RunMode)
 
 	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
 	r.StaticFS("/export", http.Dir(export.GetExcelFullPath()))
 	r.StaticFS("/qrcode", http.Dir(qrcode.GetQrCodeFullPath()))
+	r.StaticFS("/static", http.Dir("runtime/static"))
 
 	url := ginSwagger.URL("http://127.0.0.1:8080/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+
+	r.GET("/", home.Index)
 
 	r.GET("/auth", api.GetAuth)
 	r.POST("/upload", api.UploadImage)
