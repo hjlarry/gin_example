@@ -9,10 +9,7 @@ import (
 type Tag struct {
 	Model
 
-	Name       string `json:"name"`
-	CreatedBy  string `json:"created_by"`
-	ModifiedBy string `json:"modified_by"`
-	State      int    `json:"state"`
+	Name string `json:"name"`
 }
 
 func GetTags(pageNum int, pageSize int, maps interface{}) ([]*Tag, error) {
@@ -45,9 +42,7 @@ func ExistTagByName(name string) (bool, error) {
 
 func AddTag(name string, state int, createdBy string) error {
 	tag := Tag{
-		Name:      name,
-		State:     state,
-		CreatedBy: createdBy,
+		Name: name,
 	}
 	if err := db.Create(&tag).Error; err != nil {
 		return err

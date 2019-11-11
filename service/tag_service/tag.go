@@ -121,10 +121,8 @@ func (t *Tag) Export() (string, error) {
 		values := []string{
 			strconv.Itoa(v.ID),
 			v.Name,
-			v.CreatedBy,
-			strconv.Itoa(v.CreatedOn),
-			v.ModifiedBy,
-			strconv.Itoa(v.ModifiedOn),
+			//v.CreatedOn,
+			//v.ModifiedOn,
 		}
 
 		row = sheet.AddRow()

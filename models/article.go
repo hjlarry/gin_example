@@ -9,26 +9,34 @@ import (
 type Article struct {
 	Model
 
-	TagID int `json:"tag_id" gorm:"index"`
-	Tag   Tag `json:"tag"`
-
 	Title         string `json:"title"`
-	Desc          string `json:"desc"`
-	Content       string `json:"content"`
+	AuthorID      int    `json:"title"`
+	Slug          string `json:"slug"`
+	Summary       string `json:"summary"`
+	CanComment    bool   `json:"can_comment"`
+	Status        int    `json:"status"`
+	Type          int    `json:"type"`
+	Content       string `json:"content" gorm:"type:longtext"`
 	CoverImageUrl string `json:"cover_image_url"`
-	CreatedBy     string `json:"created_by"`
-	ModifiedBy    string `json:"modified_by"`
-	State         int    `json:"state"`
+
+	Tags []*Tag `gorm:"-"`
+	User User   `gorm:"-"`
+}
+
+type ArticleTag struct {
+	Model
+	PostId int `gorm:"index"`
+	TagId  int `gorm:"index"`
 }
 
 func (article *Article) BeforeCreate(scope *gorm.Scope) error {
-	scope.SetColumn("CreatedOn", time.Now().Unix())
+	_ = scope.SetColumn("CreatedOn", time.Now().Unix())
 
 	return nil
 }
 
 func (article *Article) BeforeUpdate(scope *gorm.Scope) error {
-	scope.SetColumn("ModifiedOn", time.Now().Unix())
+	_ = scope.SetColumn("ModifiedOn", time.Now().Unix())
 
 	return nil
 }
@@ -72,7 +80,7 @@ func GetArticle(id int) (*Article, error) {
 		return nil, err
 	}
 
-	err = db.Model(&article).Related(&article.Tag).Error
+	//err = db.Model(&article).Related(&article.Tag).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
@@ -88,13 +96,10 @@ func EditArticle(id int, data interface{}) error {
 
 func AddArticle(data map[string]interface{}) error {
 	err := db.Create(&Article{
-		TagID:         data["tag_id"].(int),
 		Title:         data["title"].(string),
-		Desc:          data["desc"].(string),
 		Content:       data["content"].(string),
 		CoverImageUrl: data["cover_image_url"].(string),
-		CreatedBy:     data["created_by"].(string),
-		State:         data["state"].(int),
+		//CreatedOn:     data["created_by"].(string),
 	}).Error
 
 	return err

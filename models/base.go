@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -13,9 +14,9 @@ import (
 var db *gorm.DB
 
 type Model struct {
-	ID         int `gorm:"primary_key" json:"id"`
-	CreatedOn  int `json:"created_on"`
-	ModifiedOn int `json:"modified_on"`
+	ID         int       `gorm:"primary_key" json:"id"`
+	CreatedOn  time.Time `json:"created_on"`
+	ModifiedOn time.Time `json:"modified_on"`
 }
 
 func Setup() {
@@ -37,6 +38,7 @@ func Setup() {
 	db.SingularTable(true)
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
+	db.AutoMigrate(&Article{}, &ArticleTag{}, &Comment{}, &Tag{}, &User{}, &GithubUser{})
 }
 
 func CloseDB() {
