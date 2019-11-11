@@ -7,6 +7,7 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
+	"log"
 	"net/http"
 )
 
@@ -30,18 +31,9 @@ func GetArticle(c *gin.Context) {
 	}
 
 	articleService := article_service.Article{ID: id}
-	exists, err := articleService.ExistByID()
-	if err != nil {
-		appG.Response(http.StatusOK, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
-		return
-	}
-	if !exists {
-		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
-		return
-	}
-
 	article, err := articleService.Get()
 	if err != nil {
+		log.Fatal(err)
 		appG.Response(http.StatusOK, e.ERROR_GET_ARTICLE_FAIL, nil)
 		return
 	}

@@ -18,11 +18,11 @@
                     <span class="post-meta">
                 <span class="post-tags">
                     <ul class="article-tag-list">
-
+                        {{range $k,$v := .article.Tags }}
                         <li class="article-tag-list-item">
-                            <a class="article-tag-list-link" href=""></a>
+                            <a class="article-tag-list-link" href="/tag/{{$v.ID}}">{{$v.Name}}</a>
                         </li>
-
+                        {{end}}
                     </ul>
                 </span>
             </span>

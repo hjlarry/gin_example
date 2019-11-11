@@ -18,7 +18,6 @@ type Article struct {
 	State         int
 	CreatedBy     string
 	ModifiedBy    string
-	Tags          *[]models.Tag
 
 	PageNum  int
 	PageSize int
@@ -39,6 +38,8 @@ func (a *Article) Get() (*models.Article, error) {
 		}
 	}
 	article, err := models.GetArticle(a.ID)
+	tags, err := models.GetTagsByArticleID(a.ID)
+	article.Tags = tags
 	if err != nil {
 		return nil, err
 	}

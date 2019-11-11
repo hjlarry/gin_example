@@ -12,6 +12,21 @@ type Tag struct {
 	Name string `json:"name"`
 }
 
+func GetTagsByArticleID(articleID int) ([]*Tag, error) {
+	var tags []*Tag
+	rows, err := db.Raw("select t.* from blog_tag t inner join blog_article_tag at on t.id = at.tag_id where at.article_id = ?", articleID).Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var tag Tag
+		_ = db.ScanRows(rows, &tag)
+		tags = append(tags, &tag)
+	}
+	return tags, nil
+}
+
 func GetTags(pageNum int, pageSize int, maps interface{}) ([]*Tag, error) {
 	var tags []*Tag
 	err := db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags).Error

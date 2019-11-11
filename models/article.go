@@ -25,8 +25,8 @@ type Article struct {
 
 type ArticleTag struct {
 	Model
-	PostId int `gorm:"index"`
-	TagId  int `gorm:"index"`
+	ArticleID int `gorm:"index"`
+	TagId     int `gorm:"index"`
 }
 
 func (article *Article) BeforeCreate(scope *gorm.Scope) error {
