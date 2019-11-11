@@ -7,52 +7,52 @@
             <article class="post" id="post">
                 <header class="post-header text-center">
                     <h1 class="title">
-                        {{ post.title }}
+                        {{ .article.Title }}
                     </h1>
                     <span>
-                <time class="time" datetime="{{ post.created_at.strftime('%Y-%m-%dT%H:%M:%S.%fZ') }}">
-                    {{ post.created_at.strftime('%Y-%m-%d') }}
+                <time class="time" datetime="{{dateFormat .article.CreatedOn "2006-01-02 15:04" }}">
+                    {{dateFormat .article.CreatedOn "2006-01-02 15:04" }}
                 </time>
             </span>
                     <span class="slash">/</span>
                     <span class="post-meta">
                 <span class="post-tags">
                     <ul class="article-tag-list">
-                        {% for tag in post.tags %}
+
                         <li class="article-tag-list-item">
-                            <a class="article-tag-list-link" href="{{ tag.url }}">{{ tag.name }}</a>
+                            <a class="article-tag-list-link" href=""></a>
                         </li>
-                        {% endfor %}
+
                     </ul>
                 </span>
             </span>
                 </header>
 
                 <div class="post-content">
-                    {{ post.html_content }}
+                    {{ .article.Content }}
                 </div>
 
             </article>
             <div class="toc-container">
-                {{ post.toc }}
+                // TODO TOC
             </div>
         </div>
 
-        <div class="social-sharer" data-title="{{ post.title }}" date-url="{{ post.url }}"
+        <div class="social-sharer" data-title="{{ .article.Title }}" date-url="/articles/{{.article.ID}}"
              data-services="wechat,weibo,douban,yingxiang,linkedin"></div>
 
         <ul id="related">
             {% for p in related_posts %}
             <li>
-                <a href="{{ p.url }}" title="{{ p.title }}">{{ p.title }}</a>
+                <a href="" title="">TODO</a>
             </li>
             {% endfor %}
         </ul>
         <div id="reactions-container">
-            {{ macros.render_react_container(stats, reaction_type, react_map) }}
+            TODO
         </div>
 
-        {{ macros.render_comment_container(post, 10, github_user, liked_comment_ids) }}
+        TODO
         <div class="copyright">
             <span>本作品采用</span>
             <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>

@@ -75,7 +75,7 @@ func GetArticles(pageNum int, pageSize int, maps interface{}) ([]*Article, error
 
 func GetArticle(id int) (*Article, error) {
 	var article Article
-	err := db.Where("id = ? AND deleted_on = ? ", id, 0).First(&article).Error
+	err := db.Where("id = ?", id).First(&article).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}

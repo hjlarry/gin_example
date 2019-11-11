@@ -18,6 +18,7 @@ type Article struct {
 	State         int
 	CreatedBy     string
 	ModifiedBy    string
+	Tags          *[]models.Tag
 
 	PageNum  int
 	PageSize int
@@ -33,7 +34,7 @@ func (a *Article) Get() (*models.Article, error) {
 		if err != nil {
 			logging.Info(err)
 		} else {
-			json.Unmarshal(data, &cacheArticle)
+			_ = json.Unmarshal(data, &cacheArticle)
 			return cacheArticle, nil
 		}
 	}
@@ -41,7 +42,7 @@ func (a *Article) Get() (*models.Article, error) {
 	if err != nil {
 		return nil, err
 	}
-	gredis.Set(key, article, 3600)
+	_ = gredis.Set(key, article, 3600)
 	return article, nil
 }
 

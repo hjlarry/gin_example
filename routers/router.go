@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"html/template"
 	"net/http"
 
 	_ "gin_example/docs"
@@ -8,6 +9,7 @@ import (
 	"gin_example/pkg/qrcode"
 	"gin_example/pkg/setting"
 	"gin_example/pkg/upload"
+	"gin_example/pkg/util"
 	"gin_example/routers/api"
 	v1 "gin_example/routers/api/v1"
 	"gin_example/routers/home"
@@ -21,6 +23,9 @@ func InitRouter() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
+	r.SetFuncMap(template.FuncMap{
+		"dateFormat": util.DateFormat,
+	})
 	r.LoadHTMLGlob("templates/*")
 	gin.SetMode(setting.ServerSetting.RunMode)
 
@@ -33,6 +38,7 @@ func InitRouter() *gin.Engine {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	r.GET("/", home.Index)
+	r.GET("/articles/:id", home.GetArticle)
 
 	r.GET("/auth", api.GetAuth)
 	r.POST("/upload", api.UploadImage)
