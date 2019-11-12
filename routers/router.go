@@ -40,11 +40,12 @@ func InitRouter() *gin.Engine {
 	r.GET("/", home.Index)
 	r.GET("/articles/:id", home.GetArticle)
 
-	r.GET("/auth", api.GetAuth)
+	r.POST("/api/v1/user/login", api.AuthForTest)
 	r.POST("/upload", api.UploadImage)
 	apiv1 := r.Group("/api/v1")
 	// apiv1.Use(jwt.JWT())
 	{
+		apiv1.GET("/user/info", api.InfoForTest)
 		//获取标签列表
 		apiv1.GET("/tags", v1.GetTags)
 		//新建标签

@@ -10,7 +10,7 @@ type Article struct {
 	Model
 
 	Title         string `json:"title"`
-	AuthorID      int    `json:"title"`
+	AuthorID      int
 	Slug          string `json:"slug"`
 	Summary       string `json:"summary"`
 	CanComment    bool   `json:"can_comment"`

@@ -54,3 +54,22 @@ func GetAuth(c *gin.Context) {
 		"data": data,
 	})
 }
+
+func AuthForTest(c *gin.Context) {
+	data := make(map[string]interface{})
+	data["token"] = 123
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.SUCCESS,
+		"msg":  e.GetMsg(e.SUCCESS),
+		"data": data,
+	})
+}
+
+func InfoForTest(c *gin.Context) {
+	data := make(map[string]interface{})
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.SUCCESS,
+		"msg":  e.GetMsg(e.SUCCESS),
+		"data": data,
+	})
+}

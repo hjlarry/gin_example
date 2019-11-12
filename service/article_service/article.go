@@ -62,7 +62,7 @@ func (a *Article) GetAll() ([]*models.Article, error) {
 		if err != nil {
 			logging.Info(err)
 		} else {
-			json.Unmarshal(data, &cacheArticles)
+			_ = json.Unmarshal(data, &cacheArticles)
 			return cacheArticles, nil
 		}
 	}
@@ -70,7 +70,7 @@ func (a *Article) GetAll() ([]*models.Article, error) {
 	if err != nil {
 		return nil, err
 	}
-	gredis.Set(key, articles, 3600)
+	_ = gredis.Set(key, articles, 3600)
 	return articles, nil
 }
 
