@@ -1,7 +1,7 @@
 package e
 
 const (
-	SUCCESS        = 200
+	SUCCESS        = 20000
 	ERROR          = 500
 	INVALID_PARAMS = 400
 

@@ -15,7 +15,7 @@
       </el-table-column>
       <el-table-column label="Title">
         <template slot-scope="scope">
-          {{ scope.row.title }}
+          {{ scope.row.slug }}
         </template>
       </el-table-column>
       <el-table-column label="Author" width="110" align="center">
@@ -70,7 +70,7 @@ export default {
     fetchData() {
       this.listLoading = true
       getList().then(response => {
-        this.list = response.data.items
+        this.list = response.data.lists
         this.listLoading = false
       })
     }
