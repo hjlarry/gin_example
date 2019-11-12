@@ -20,7 +20,7 @@ func main() {
 	setting.Setup()
 	models.Setup()
 	logging.Setup()
-	gredis.Setup()
+	_ = gredis.Setup()
 
 	router := routers.InitRouter()
 

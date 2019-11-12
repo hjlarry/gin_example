@@ -68,7 +68,7 @@ func (a *Article) GetAll() ([]*models.Article, error) {
 		return nil, err
 	}
 	for _, a := range articles {
-		a.CreatedAt = util.DateFormat(a.CreatedOn, "2006-01-02 15:04")
+		a.CreatedAt = util.DateFormat(*a.CreatedOn, "2006-01-02 15:04")
 	}
 	_ = gredis.Set(key, articles, 3600)
 	return articles, nil

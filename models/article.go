@@ -2,8 +2,6 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
-
-	"time"
 )
 
 type Article struct {
@@ -27,18 +25,6 @@ type ArticleTag struct {
 	Model
 	ArticleID int `gorm:"index"`
 	TagId     int `gorm:"index"`
-}
-
-func (article *Article) BeforeCreate(scope *gorm.Scope) error {
-	_ = scope.SetColumn("CreatedOn", time.Now().Unix())
-
-	return nil
-}
-
-func (article *Article) BeforeUpdate(scope *gorm.Scope) error {
-	_ = scope.SetColumn("ModifiedOn", time.Now().Unix())
-
-	return nil
 }
 
 func ExistArticleByID(id int) (bool, error) {
@@ -99,10 +85,6 @@ func AddArticle(data map[string]interface{}) error {
 		Title:   data["title"].(string),
 		Content: data["content"].(string),
 		//CoverImageUrl: data["cover_image_url"].(string),
-		Model: Model{
-			CreatedOn:  time.Now(),
-			ModifiedOn: time.Now(),
-		},
 	}).Error
 
 	return err
