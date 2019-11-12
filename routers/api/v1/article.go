@@ -154,12 +154,9 @@ func AddArticle(c *gin.Context) {
 	}
 
 	articleService := article_service.Article{
-		TagID:         form.TagID,
-		Title:         form.Title,
-		Desc:          form.Desc,
-		Content:       form.Content,
-		CoverImageUrl: form.CoverImageUrl,
-		State:         form.State,
+		TagID: form.TagID,
+		Title: form.Title,
+		State: form.State,
 	}
 	if err := articleService.Add(); err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_ARTICLE_FAIL, nil)
@@ -204,14 +201,10 @@ func EditArticle(c *gin.Context) {
 	}
 
 	articleService := article_service.Article{
-		ID:            form.ID,
-		TagID:         form.TagID,
-		Title:         form.Title,
-		Desc:          form.Desc,
-		Content:       form.Content,
-		CoverImageUrl: form.CoverImageUrl,
-		ModifiedBy:    form.ModifiedBy,
-		State:         form.State,
+		ID:    form.ID,
+		TagID: form.TagID,
+		Title: form.Title,
+		State: form.State,
 	}
 	exists, err := articleService.ExistByID()
 	if err != nil {

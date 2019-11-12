@@ -65,6 +65,13 @@ export const constantRoutes = [
         name: 'Article',
         component: () => import('@/views/article/index'),
         meta: { title: 'Article', icon: 'table' }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/article/create'),
+        name: 'article-create',
+        hidden: true,
+        meta: { title: '创建资讯' }
       }
     ]
   },
@@ -81,7 +88,6 @@ export const constantRoutes = [
       }
     ]
   },
-
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

@@ -10,17 +10,17 @@ type Article struct {
 	Model
 
 	Title         string `json:"title"`
-	AuthorID      int
+	AuthorID      int    `json:"-"`
 	Slug          string `json:"slug"`
 	Summary       string `json:"summary"`
 	CanComment    bool   `json:"can_comment"`
 	Status        int    `json:"status"`
-	Type          int    `json:"type"`
+	Type          int    `json:"-"`
 	Content       string `json:"content" gorm:"type:longtext"`
 	CoverImageUrl string `json:"cover_image_url"`
 
 	Tags []*Tag `gorm:"-"`
-	User User   `gorm:"-"`
+	User User   `gorm:"-" json:"-"`
 }
 
 type ArticleTag struct {

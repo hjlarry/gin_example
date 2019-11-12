@@ -5,22 +5,18 @@ import (
 	"gin_example/models"
 	"gin_example/pkg/gredis"
 	"gin_example/pkg/logging"
+	"gin_example/pkg/util"
 	"gin_example/service/cache_service"
 )
 
 type Article struct {
-	ID            int
-	TagID         int
-	Title         string
-	Desc          string
-	Content       string
-	CoverImageUrl string
-	State         int
-	CreatedBy     string
-	ModifiedBy    string
-
+	ID       int
+	TagID    int
+	State    int
 	PageNum  int
 	PageSize int
+
+	Title string
 }
 
 func (a *Article) Get() (*models.Article, error) {
@@ -70,6 +66,9 @@ func (a *Article) GetAll() ([]*models.Article, error) {
 	if err != nil {
 		return nil, err
 	}
+	for _, a := range articles {
+		a.CreatedAt = util.DateFormat(a.CreatedOn, "2006-01-02 15:04")
+	}
 	_ = gredis.Set(key, articles, 3600)
 	return articles, nil
 }
@@ -92,13 +91,9 @@ func (a *Article) getMaps() map[string]interface{} {
 
 func (a *Article) Add() error {
 	article := map[string]interface{}{
-		"tag_id":          a.TagID,
-		"title":           a.Title,
-		"desc":            a.Desc,
-		"content":         a.Content,
-		"created_by":      a.CreatedBy,
-		"cover_image_url": a.CoverImageUrl,
-		"state":           a.State,
+		"tag_id": a.TagID,
+		"title":  a.Title,
+		"state":  a.State,
 	}
 	if err := models.AddArticle(article); err != nil {
 		return err
@@ -108,13 +103,9 @@ func (a *Article) Add() error {
 
 func (a *Article) Edit() error {
 	article := map[string]interface{}{
-		"tag_id":          a.TagID,
-		"title":           a.Title,
-		"desc":            a.Desc,
-		"content":         a.Content,
-		"modified_by":     a.ModifiedBy,
-		"cover_image_url": a.CoverImageUrl,
-		"state":           a.State,
+		"tag_id": a.TagID,
+		"title":  a.Title,
+		"state":  a.State,
 	}
 	if err := models.EditArticle(a.ID, article); err != nil {
 		return err
