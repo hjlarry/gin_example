@@ -16,7 +16,8 @@ type Article struct {
 	PageNum  int
 	PageSize int
 
-	Title string
+	Title   string
+	Content string
 }
 
 func (a *Article) Get() (*models.Article, error) {
@@ -91,9 +92,10 @@ func (a *Article) getMaps() map[string]interface{} {
 
 func (a *Article) Add() error {
 	article := map[string]interface{}{
-		"tag_id": a.TagID,
-		"title":  a.Title,
-		"state":  a.State,
+		"tag_id":  a.TagID,
+		"title":   a.Title,
+		"state":   a.State,
+		"content": a.Content,
 	}
 	if err := models.AddArticle(article); err != nil {
 		return err

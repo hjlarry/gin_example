@@ -54,7 +54,7 @@
       onSubmit() {
         if (this.isEdit) {
           editArticle(this.article).then(response => {
-            if (response.code === 0) {
+            if (response.code === 20000) {
               this.$notify({
                 title: '成功',
                 message: '已编辑',
@@ -65,7 +65,7 @@
           })
         } else {
           createArticle(this.article).then(response => {
-            if (response.code === 0) {
+            if (response.code === 20000) {
               this.$notify({
                 title: '成功',
                 message: '已创建',

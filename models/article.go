@@ -96,10 +96,13 @@ func EditArticle(id int, data interface{}) error {
 
 func AddArticle(data map[string]interface{}) error {
 	err := db.Create(&Article{
-		Title:         data["title"].(string),
-		Content:       data["content"].(string),
-		CoverImageUrl: data["cover_image_url"].(string),
-		//CreatedOn:     data["created_by"].(string),
+		Title:   data["title"].(string),
+		Content: data["content"].(string),
+		//CoverImageUrl: data["cover_image_url"].(string),
+		Model: Model{
+			CreatedOn:  time.Now(),
+			ModifiedOn: time.Now(),
+		},
 	}).Error
 
 	return err

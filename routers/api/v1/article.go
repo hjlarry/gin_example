@@ -111,13 +111,12 @@ func GetArticles(c *gin.Context) {
 }
 
 type AddArticleForm struct {
-	TagID         int    `form:"tag_id" valid:"Required;Min(1)"`
+	TagID         int    `form:"tag_id"`
 	Title         string `form:"title" valid:"Required;MaxSize(100)"`
-	Desc          string `form:"desc" valid:"Required;MaxSize(255)"`
+	Desc          string `form:"desc"`
 	Content       string `form:"content" valid:"Required;MaxSize(65535)"`
-	CreatedBy     string `form:"created_by" valid:"Required;MaxSize(100)"`
 	CoverImageUrl string `form:"cover_image_url"`
-	State         int    `form:"state" valid:"Range(0,1)"`
+	State         int    `form:"state"`
 }
 
 // @Summary Add article
@@ -141,22 +140,23 @@ func AddArticle(c *gin.Context) {
 		return
 	}
 
-	tagService := tag_service.Tag{ID: form.TagID}
-	exists, err := tagService.ExistByID()
-	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_EXIST_TAG_FAIL, nil)
-		return
-	}
-
-	if !exists {
-		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_TAG, nil)
-		return
-	}
+	//tagService := tag_service.Tag{ID: form.TagID}
+	//exists, err := tagService.ExistByID()
+	//if err != nil {
+	//	appG.Response(http.StatusInternalServerError, e.ERROR_EXIST_TAG_FAIL, nil)
+	//	return
+	//}
+	//
+	//if !exists {
+	//	appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_TAG, nil)
+	//	return
+	//}
 
 	articleService := article_service.Article{
-		TagID: form.TagID,
-		Title: form.Title,
-		State: form.State,
+		TagID:   form.TagID,
+		Title:   form.Title,
+		Content: form.Content,
+		State:   form.State,
 	}
 	if err := articleService.Add(); err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_ARTICLE_FAIL, nil)
