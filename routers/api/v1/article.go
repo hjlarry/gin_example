@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -140,19 +139,6 @@ func AddArticle(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("%v", form)
-
-	//tagService := tag_service.Tag{ID: form.TagID}
-	//exists, err := tagService.ExistByID()
-	//if err != nil {
-	//	appG.Response(http.StatusInternalServerError, e.ERROR_EXIST_TAG_FAIL, nil)
-	//	return
-	//}
-	//
-	//if !exists {
-	//	appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_TAG, nil)
-	//	return
-	//}
 	status, _ := strconv.Atoi(form.Status)
 	createdAt, _ := time.Parse("2006-01-02T15:04:05.000Z", form.CreatedAt)
 	articleService := article_service.Article{
@@ -164,8 +150,15 @@ func AddArticle(c *gin.Context) {
 		Status:     status,
 		CreatedAt:  &createdAt,
 	}
-	if err := articleService.Add(); err != nil {
+	articleId, err := articleService.Add()
+	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_ARTICLE_FAIL, nil)
+		return
+	}
+
+	tagService := tag_service.TagServe{ArticleId: articleId, Tags: form.Tags}
+	if err := tagService.UpdateMulti(); err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_TAG_FAIL, nil)
 		return
 	}
 

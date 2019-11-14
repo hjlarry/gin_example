@@ -97,7 +97,7 @@ func (a *Article) getMaps() map[string]interface{} {
 	return maps
 }
 
-func (a *Article) Add() error {
+func (a *Article) Add() (int, error) {
 	article := map[string]interface{}{
 		"title":       a.Title,
 		"slug":        a.Slug,
@@ -107,10 +107,11 @@ func (a *Article) Add() error {
 		"status":      a.Status,
 		"created_at":  a.CreatedAt,
 	}
-	if err := models.AddArticle(article); err != nil {
-		return err
+	articleId, err := models.AddArticle(article)
+	if err != nil {
+		return -1, err
 	}
-	return nil
+	return articleId, nil
 }
 
 func (a *Article) Edit() error {

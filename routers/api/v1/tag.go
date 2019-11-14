@@ -20,15 +20,9 @@ import (
 func GetTags(c *gin.Context) {
 	appG := app.Gin{C: c}
 	name := c.Query("name")
-	state := -1
-
-	if arg := c.Query("state"); arg != "" {
-		state = com.StrTo(arg).MustInt()
-	}
 
 	tagService := tag_service.Tag{
 		Name:     name,
-		State:    state,
 		PageNum:  util.GetPage(c),
 		PageSize: setting.AppSetting.PageSize,
 	}
@@ -72,7 +66,6 @@ func AddTag(c *gin.Context) {
 	tagService := tag_service.Tag{
 		Name:      form.Name,
 		CreatedBy: form.CreatedBy,
-		State:     form.State,
 	}
 	exists, err := tagService.ExistByName()
 	if err != nil {
@@ -81,12 +74,6 @@ func AddTag(c *gin.Context) {
 	}
 	if exists {
 		appG.Response(http.StatusOK, e.ERROR_EXIST_TAG, nil)
-		return
-	}
-
-	err = tagService.Add()
-	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_TAG_FAIL, nil)
 		return
 	}
 
@@ -118,7 +105,6 @@ func EditTag(c *gin.Context) {
 		ID:         form.ID,
 		Name:       form.Name,
 		ModifiedBy: form.ModifiedBy,
-		State:      form.State,
 	}
 
 	exists, err := tagService.ExistByID()
@@ -129,12 +115,6 @@ func EditTag(c *gin.Context) {
 
 	if !exists {
 		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_TAG, nil)
-		return
-	}
-
-	err = tagService.Edit()
-	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_EDIT_TAG_FAIL, nil)
 		return
 	}
 
@@ -176,14 +156,9 @@ func DeleteTag(c *gin.Context) {
 func ExportTag(c *gin.Context) {
 	appG := app.Gin{C: c}
 	name := c.PostForm("name")
-	state := -1
-	if arg := c.PostForm("state"); arg != "" {
-		state = com.StrTo(arg).MustInt()
-	}
 
 	tagService := tag_service.Tag{
 		Name:     name,
-		State:    state,
 		PageSize: 10,
 	}
 

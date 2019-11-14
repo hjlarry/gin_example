@@ -10,6 +10,12 @@ type Tag struct {
 	Name string `json:"name"`
 }
 
+type ArticleTag struct {
+	Model
+	ArticleID int `gorm:"index"`
+	TagId     int `gorm:"index"`
+}
+
 func GetTagsByArticleID(articleID int) ([]*Tag, error) {
 	var tags []*Tag
 	rows, err := db.Raw("select t.* from blog_tag t inner join blog_article_tag at on t.id = at.tag_id where at.article_id = ?", articleID).Rows()
@@ -32,6 +38,49 @@ func GetTags(pageNum int, pageSize int, maps interface{}) ([]*Tag, error) {
 		return nil, err
 	}
 	return tags, nil
+}
+
+func GetTagIDByName(name string) int {
+	var tag Tag
+	db.First(&tag, "name=?", name)
+	return tag.ID
+}
+
+func isInArray(name string, tagNameArray []string) bool {
+	for _, v := range tagNameArray {
+		if name == v {
+			return true
+		}
+	}
+	return false
+}
+
+func getTagArray(aTags, bTags []string) (tags []string) {
+	for _, v1 := range aTags {
+		if !isInArray(v1, bTags) {
+			tags = append(tags, v1)
+		}
+	}
+	return
+}
+
+func UpdateMultiTags(originTags, newTags []string, article_id int) error {
+	needDelTags := getTagArray(originTags, newTags)
+	var needToDelTagID []int
+	for _, v := range needDelTags {
+		tagID := GetTagIDByName(v)
+		needToDelTagID = append(needToDelTagID, tagID)
+	}
+	db.Delete(&ArticleTag{}, "tag_id in ( ? )", needToDelTagID)
+
+	needAddTags := getTagArray(newTags, originTags)
+	for _, v := range needAddTags {
+		tag := Tag{Name: v}
+		db.FirstOrCreate(&tag, "name=?", v)
+		db.Create(&ArticleTag{ArticleID: article_id, TagId: tag.ID})
+	}
+
+	return nil
 }
 
 func GetTagTotal(maps interface{}) (int, error) {

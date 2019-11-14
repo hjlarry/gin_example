@@ -22,12 +22,6 @@ type Article struct {
 	User User   `gorm:"-" json:"-"`
 }
 
-type ArticleTag struct {
-	Model
-	ArticleID int `gorm:"index"`
-	TagId     int `gorm:"index"`
-}
-
 func ExistArticleByID(id int) (bool, error) {
 	var article Article
 	err := db.Select("id").Where("id = ?", id).First(&article).Error
@@ -53,7 +47,7 @@ func GetArticleTotal(maps interface{}) (int, error) {
 
 func GetArticles(pageNum int, pageSize int, maps interface{}) ([]*Article, error) {
 	var articles []*Article
-	err := db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&articles).Error
+	err := db.Where(maps).Offset(pageNum).Limit(pageSize).Order("id desc").Find(&articles).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
@@ -81,8 +75,9 @@ func EditArticle(id int, data interface{}) error {
 	return err
 }
 
-func AddArticle(data map[string]interface{}) error {
-	err := db.Create(&Article{
+func AddArticle(data map[string]interface{}) (int, error) {
+
+	article := Article{
 		Title:      data["title"].(string),
 		Slug:       data["slug"].(string),
 		Summary:    data["summary"].(string),
@@ -92,9 +87,11 @@ func AddArticle(data map[string]interface{}) error {
 		Model: Model{
 			CreatedOn: data["created_at"].(*time.Time),
 		},
-	}).Error
+	}
 
-	return err
+	err := db.Create(&article).Error
+
+	return article.ID, err
 }
 
 func DeleteArticle(id int) error {

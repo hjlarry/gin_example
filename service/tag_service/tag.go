@@ -19,7 +19,6 @@ import (
 type Tag struct {
 	ID         int
 	Name       string
-	State      int
 	CreatedBy  string
 	ModifiedBy string
 
@@ -27,12 +26,21 @@ type Tag struct {
 	PageSize int
 }
 
+type TagServe struct {
+	ArticleId int
+	Tags      []string
+}
+
+func (t *TagServe) UpdateMulti() error {
+	err := models.UpdateMultiTags([]string{}, t.Tags, t.ArticleId)
+	return err
+}
+
 func (t *Tag) GetAll() ([]*models.Tag, error) {
 	var tags, cacheTags []*models.Tag
 
 	cache := cache_service.Tag{
 		ID:       t.ID,
-		State:    t.State,
 		PageNum:  t.PageNum,
 		PageSize: t.PageSize,
 	}
@@ -69,27 +77,8 @@ func (t *Tag) Count() (int, error) {
 func (t *Tag) getMaps() map[string]interface{} {
 	maps := make(map[string]interface{})
 	maps["deleted_on"] = 0
-	if t.State != -1 {
-		maps["state"] = t.State
-	}
 
 	return maps
-}
-
-func (t *Tag) Add() error {
-	return models.AddTag(t.Name, t.State, t.CreatedBy)
-}
-
-func (t *Tag) Edit() error {
-	tag := map[string]interface{}{
-		"name":        t.Name,
-		"modified_by": t.ModifiedBy,
-		"state":       t.State,
-	}
-	if err := models.EditTag(t.ID, tag); err != nil {
-		return err
-	}
-	return nil
 }
 
 func (t *Tag) Delete() error {
