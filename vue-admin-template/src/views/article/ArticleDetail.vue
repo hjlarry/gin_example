@@ -1,15 +1,75 @@
 <template>
   <div class="app-container">
     <el-form ref="form" :model="article">
-      <el-form-item style="margin-bottom: 40px;" prop="title">
-        <MDinput name="name" v-model="article.title" required :maxlength="100">
-          标题
+      <el-form-item>
+        <el-col :span="11">
+          <MDinput name="name" v-model="article.title" required :maxlength="100">
+            标题
+          </MDinput>
+        </el-col>
+        <el-col :span="2">&nbsp;</el-col>
+        <el-col :span="11">
+          <MDinput name="name" v-model="article.slug" :maxlength="100">
+            Slug
+          </MDinput>
+        </el-col>
+      </el-form-item>
+
+      <el-form-item style="margin-bottom: 40px;" prop="summary">
+        <MDinput name="name" v-model="article.summary" :maxlength="255">
+          Summary
         </MDinput>
       </el-form-item>
 
       <div class="editor-container">
         <MarkdownEditor ref="editor" v-model="article.content"></MarkdownEditor>
       </div>
+
+      <el-form-item>
+        <el-col :span="11">
+          <label>Tags</label>&nbsp;&nbsp;
+          <el-select
+            v-model="article.tags"
+            multiple
+            filterable
+            allow-create
+            default-first-option
+            style="width: 90%"
+            placeholder="请选择文章标签">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="2">&nbsp;</el-col>
+        <el-col :span="11">
+          <label>Created At</label>&nbsp;&nbsp;
+          <el-date-picker
+            v-model="article.created_at"
+            type="datetime"
+            placeholder="选择日期时间">
+          </el-date-picker>
+        </el-col>
+      </el-form-item>
+
+      <el-form-item>
+        <el-col :span="11">
+          <label>Can Comment</label>&nbsp;&nbsp;<el-switch v-model="article.can_comment"/>
+        </el-col>
+        <el-col :span="2">&nbsp;</el-col>
+        <el-col :span="11">
+          <label>Status</label>&nbsp;&nbsp;
+          <el-radio-group v-model="article.status">
+            <el-radio label="1">published</el-radio>
+            <el-radio label="0">draft</el-radio>
+            <el-radio label="2">deleted</el-radio>
+          </el-radio-group>
+        </el-col>
+      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" @click="onSubmit">提交</el-button>
         <el-button @click="onClear">清空</el-button>
@@ -25,9 +85,11 @@
 
   const defaultForm = {
     title: '',
+    slug: '',
+    summary: '',
     content: '',
-    order: '',
-    module_id: '',
+    status: '0',
+    can_comment: true,
   }
   export default {
     name: 'articleDetail',
@@ -40,9 +102,7 @@
     },
     data() {
       return {
-        article: Object.assign({}, defaultForm),
-        module: {},
-        fileList: [],
+        article: Object.assign({}, defaultForm)
       }
     },
     created() {

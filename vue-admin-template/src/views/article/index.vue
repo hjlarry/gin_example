@@ -30,7 +30,7 @@
       </el-table-column>
       <el-table-column label="Tags" width="400" align="center">
         <template slot-scope="scope" >
-          <el-tag v-for="tag in scope.row.tags" style="margin-right: 3px;">{{tag.name}}</el-tag>
+          <el-tag v-for="tag in scope.row.tags" v-bind:key="tag.id" style="margin-right: 3px;">{{tag.name}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="Status" width="110" align="center">
