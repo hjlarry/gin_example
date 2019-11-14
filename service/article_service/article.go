@@ -7,17 +7,22 @@ import (
 	"gin_example/pkg/logging"
 	"gin_example/pkg/util"
 	"gin_example/service/cache_service"
+	"time"
 )
 
 type Article struct {
 	ID       int
 	TagID    int
-	State    int
+	Status   int
 	PageNum  int
 	PageSize int
 
-	Title   string
-	Content string
+	Title      string
+	Slug       string
+	Summary    string
+	Content    string
+	CanComment bool
+	CreatedAt  *time.Time
 }
 
 func (a *Article) Get() (*models.Article, error) {
@@ -49,7 +54,7 @@ func (a *Article) GetAll() ([]*models.Article, error) {
 
 	cache := cache_service.Article{
 		TagID:    a.TagID,
-		State:    a.State,
+		Status:   a.Status,
 		PageNum:  a.PageNum,
 		PageSize: a.PageSize,
 	}
@@ -86,18 +91,21 @@ func (a *Article) Count() (int, error) {
 
 func (a *Article) getMaps() map[string]interface{} {
 	maps := make(map[string]interface{})
-	if a.State != -1 {
-		maps["state"] = a.State
+	if a.Status != -1 {
+		maps["status"] = a.Status
 	}
 	return maps
 }
 
 func (a *Article) Add() error {
 	article := map[string]interface{}{
-		"tag_id":  a.TagID,
-		"title":   a.Title,
-		"state":   a.State,
-		"content": a.Content,
+		"title":       a.Title,
+		"slug":        a.Slug,
+		"summary":     a.Summary,
+		"content":     a.Content,
+		"can_comment": a.CanComment,
+		"status":      a.Status,
+		"created_at":  a.CreatedAt,
 	}
 	if err := models.AddArticle(article); err != nil {
 		return err
@@ -107,9 +115,8 @@ func (a *Article) Add() error {
 
 func (a *Article) Edit() error {
 	article := map[string]interface{}{
-		"tag_id": a.TagID,
 		"title":  a.Title,
-		"state":  a.State,
+		"status": a.Status,
 	}
 	if err := models.EditArticle(a.ID, article); err != nil {
 		return err

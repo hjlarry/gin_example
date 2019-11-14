@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
+	"time"
 )
 
 type Article struct {
@@ -82,9 +83,15 @@ func EditArticle(id int, data interface{}) error {
 
 func AddArticle(data map[string]interface{}) error {
 	err := db.Create(&Article{
-		Title:   data["title"].(string),
-		Content: data["content"].(string),
-		//CoverImageUrl: data["cover_image_url"].(string),
+		Title:      data["title"].(string),
+		Slug:       data["slug"].(string),
+		Summary:    data["summary"].(string),
+		Content:    data["content"].(string),
+		CanComment: data["can_comment"].(bool),
+		Status:     data["status"].(int),
+		Model: Model{
+			CreatedOn: data["created_at"].(*time.Time),
+		},
 	}).Error
 
 	return err

@@ -48,7 +48,7 @@
         <el-col :span="11">
           <label>Created At</label>&nbsp;&nbsp;
           <el-date-picker
-            v-model="article.created_at"
+            v-model="article.createdAt"
             type="datetime"
             placeholder="选择日期时间">
           </el-date-picker>
@@ -57,7 +57,7 @@
 
       <el-form-item>
         <el-col :span="11">
-          <label>Can Comment</label>&nbsp;&nbsp;<el-switch v-model="article.can_comment"/>
+          <label>Can Comment</label>&nbsp;&nbsp;<el-switch v-model="article.canComment"/>
         </el-col>
         <el-col :span="2">&nbsp;</el-col>
         <el-col :span="11">
@@ -89,7 +89,9 @@
     summary: '',
     content: '',
     status: '0',
-    can_comment: true,
+    canComment: true,
+    tags:[],
+    createdAt:'',
   }
   export default {
     name: 'articleDetail',
@@ -102,7 +104,24 @@
     },
     data() {
       return {
-        article: Object.assign({}, defaultForm)
+        article: Object.assign({}, defaultForm),
+        options: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶',
+          disabled: true
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
       }
     },
     created() {

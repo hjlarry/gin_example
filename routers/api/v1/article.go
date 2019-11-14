@@ -1,7 +1,10 @@
 package v1
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/astaxie/beego/validation"
 	"github.com/boombuler/barcode/qr"
@@ -85,7 +88,6 @@ func GetArticles(c *gin.Context) {
 
 	articleService := article_service.Article{
 		TagID:    tagId,
-		State:    state,
 		PageNum:  util.GetPage(c),
 		PageSize: setting.AppSetting.PageSize,
 	}
@@ -111,22 +113,20 @@ func GetArticles(c *gin.Context) {
 }
 
 type AddArticleForm struct {
-	TagID         int    `form:"tag_id"`
-	Title         string `form:"title" valid:"Required;MaxSize(100)"`
-	Desc          string `form:"desc"`
-	Content       string `form:"content" valid:"Required;MaxSize(65535)"`
-	CoverImageUrl string `form:"cover_image_url"`
-	State         int    `form:"state"`
+	Title      string   `form:"title" valid:"Required;MaxSize(100)"`
+	Slug       string   `form:"slug" valid:"MaxSize(100)"`
+	Summary    string   `form:"summary"`
+	Content    string   `form:"content" valid:"Required;"`
+	Status     string   `form:"status"`
+	CanComment bool     `form:"canComment"`
+	Tags       []string `form:"tags"`
+	CreatedAt  string   `form:"createdAt"`
 }
 
 // @Summary Add article
 // @Produce  json
-// @Param tag_id body int true "TagID"
 // @Param title body string true "Title"
-// @Param desc body string true "Desc"
 // @Param content body string true "Content"
-// @Param created_by body string true "CreatedBy"
-// @Param state body int true "State"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /api/v1/articles [post]
@@ -140,6 +140,8 @@ func AddArticle(c *gin.Context) {
 		return
 	}
 
+	fmt.Printf("%v", form)
+
 	//tagService := tag_service.Tag{ID: form.TagID}
 	//exists, err := tagService.ExistByID()
 	//if err != nil {
@@ -151,12 +153,16 @@ func AddArticle(c *gin.Context) {
 	//	appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_TAG, nil)
 	//	return
 	//}
-
+	status, _ := strconv.Atoi(form.Status)
+	createdAt, _ := time.Parse("2006-01-02T15:04:05.000Z", form.CreatedAt)
 	articleService := article_service.Article{
-		TagID:   form.TagID,
-		Title:   form.Title,
-		Content: form.Content,
-		State:   form.State,
+		Title:      form.Title,
+		Slug:       form.Slug,
+		Summary:    form.Summary,
+		Content:    form.Content,
+		CanComment: form.CanComment,
+		Status:     status,
+		CreatedAt:  &createdAt,
 	}
 	if err := articleService.Add(); err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_ARTICLE_FAIL, nil)
@@ -204,7 +210,6 @@ func EditArticle(c *gin.Context) {
 		ID:    form.ID,
 		TagID: form.TagID,
 		Title: form.Title,
-		State: form.State,
 	}
 	exists, err := articleService.ExistByID()
 	if err != nil {

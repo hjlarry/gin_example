@@ -2,9 +2,9 @@ package app
 
 import (
 	"gin_example/pkg/e"
+	"github.com/astaxie/beego/validation"
 	"net/http"
 
-	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 )
 
