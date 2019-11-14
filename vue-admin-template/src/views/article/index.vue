@@ -28,19 +28,19 @@
           <span>{{ scope.row.author }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Tags" width="110" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.tags }}
+      <el-table-column label="Tags" width="400" align="center">
+        <template slot-scope="scope" >
+          <el-tag v-for="tag in scope.row.tags" style="margin-right: 3px;">{{tag.name}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="Status" width="110" align="center">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+          <el-tag :type="scope.row.status | statusLabelFilter">{{ scope.row.status | statusFilter }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="Created At" width="200">
         <template slot-scope="scope">
-          <i class="el-icon-time" />
+          <i class="el-icon-time"/>
           <span>{{ scope.row.created_on }}</span>
         </template>
       </el-table-column>
@@ -55,42 +55,50 @@
 </template>
 
 <script>
-import { getList } from '@/api/article'
+  import {getList} from '@/api/article'
 
-export default {
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
+  export default {
+    filters: {
+      statusFilter(status) {
+        const statusMap = {
+          1: 'published',
+          0: 'draft',
+          2: 'deleted'
+        }
+        return statusMap[status]
+      },
+      statusLabelFilter(status) {
+        const statusMap = {
+          1: 'success',
+          0: 'warning',
+          2: 'danger'
+        }
+        return statusMap[status]
       }
-      return statusMap[status]
-    }
-  },
-  data() {
-    return {
-      list: null,
-      listLoading: true
-    }
-  },
-  created() {
-    this.fetchData()
-  },
-  methods: {
-    fetchData() {
-      this.listLoading = true
-      getList().then(response => {
-        this.list = response.data.lists
-        this.listLoading = false
-      })
     },
-    handleUpdate(row) {
-      this.$router.push({
-        path: '/article/edit',
-        query: { 'id': row.id }
-      })
+    data() {
+      return {
+        list: null,
+        listLoading: true
+      }
+    },
+    created() {
+      this.fetchData()
+    },
+    methods: {
+      fetchData() {
+        this.listLoading = true
+        getList().then(response => {
+          this.list = response.data.lists
+          this.listLoading = false
+        })
+      },
+      handleUpdate(row) {
+        this.$router.push({
+          path: '/article/edit',
+          query: {'id': row.id}
+        })
+      }
     }
   }
-}
 </script>

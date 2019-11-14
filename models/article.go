@@ -17,7 +17,7 @@ type Article struct {
 	Content       string `json:"content" gorm:"type:longtext"`
 	CoverImageUrl string `json:"cover_image_url"`
 
-	Tags []*Tag `gorm:"-"`
+	Tags []*Tag `gorm:"-" json:"tags"`
 	User User   `gorm:"-" json:"-"`
 }
 

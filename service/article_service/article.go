@@ -67,8 +67,10 @@ func (a *Article) GetAll() ([]*models.Article, error) {
 	if err != nil {
 		return nil, err
 	}
+	// TODO better query
 	for _, a := range articles {
 		a.CreatedAt = util.DateFormat(*a.CreatedOn, "2006-01-02 15:04")
+		a.Tags, _ = models.GetTagsByArticleID(a.ID)
 	}
 	_ = gredis.Set(key, articles, 3600)
 	return articles, nil
