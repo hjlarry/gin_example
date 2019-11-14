@@ -1,14 +1,13 @@
 package v1
 
 import (
-	"net/http"
-	"strconv"
-	"time"
-
 	"github.com/astaxie/beego/validation"
 	"github.com/boombuler/barcode/qr"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
+	"net/http"
+	"strconv"
+	"time"
 
 	"gin_example/pkg/app"
 	"gin_example/pkg/e"
@@ -140,7 +139,13 @@ func AddArticle(c *gin.Context) {
 	}
 
 	status, _ := strconv.Atoi(form.Status)
-	createdAt, _ := time.Parse("2006-01-02T15:04:05.000Z", form.CreatedAt)
+	var createdAt time.Time
+	if form.CreatedAt != "" {
+		createdAt, _ = time.Parse("2006-01-02T15:04:05.000Z", form.CreatedAt)
+	} else {
+		createdAt = time.Now()
+	}
+
 	articleService := article_service.Article{
 		Title:      form.Title,
 		Slug:       form.Slug,

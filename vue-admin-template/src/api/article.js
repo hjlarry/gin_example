@@ -9,7 +9,6 @@ export function getList(params) {
 }
 
 export function createArticle(data) {
-  console.log(data)
   return request({
     url: '/articles',
     method: 'post',

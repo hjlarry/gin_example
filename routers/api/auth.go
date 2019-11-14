@@ -67,6 +67,8 @@ func AuthForTest(c *gin.Context) {
 
 func InfoForTest(c *gin.Context) {
 	data := make(map[string]interface{})
+	data["name"] = "非法操作"
+	data["avatar"] = "https://cn.vuejs.org/images/logo.png"
 	c.JSON(http.StatusOK, gin.H{
 		"code": e.SUCCESS,
 		"msg":  e.GetMsg(e.SUCCESS),

@@ -61,11 +61,6 @@ func GetArticle(id int) (*Article, error) {
 		return nil, err
 	}
 
-	//err = db.Model(&article).Related(&article.Tag).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, err
-	}
-
 	return &article, err
 }
 
