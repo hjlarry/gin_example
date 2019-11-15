@@ -22,3 +22,18 @@ export function deleteArticle(id) {
     method: 'delete',
   })
 }
+
+export function editArticle(data) {
+  return request({
+    url: '/articles/' + data.id,
+    method: 'put',
+    data
+  })
+}
+
+export function fetchArticle(id) {
+  return request({
+    url: '/articles/' + id,
+    method: 'get'
+  })
+}

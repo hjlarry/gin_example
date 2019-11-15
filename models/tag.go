@@ -16,11 +16,10 @@ type ArticleTag struct {
 	TagId     int `gorm:"index"`
 }
 
-func GetTagsByArticleID(articleID int) ([]*Tag, error) {
-	var tags []*Tag
+func GetTagsByArticleID(articleID int) (tags []*Tag, err error) {
 	rows, err := db.Raw("select t.* from blog_tag t inner join blog_article_tag at on t.id = at.tag_id where at.article_id = ?", articleID).Rows()
 	if err != nil {
-		return nil, err
+		return
 	}
 	defer rows.Close()
 	for rows.Next() {
@@ -28,7 +27,7 @@ func GetTagsByArticleID(articleID int) ([]*Tag, error) {
 		_ = db.ScanRows(rows, &tag)
 		tags = append(tags, &tag)
 	}
-	return tags, nil
+	return
 }
 
 func GetTags(pageNum int, pageSize int, maps interface{}) ([]*Tag, error) {

@@ -81,7 +81,7 @@
 <script>
   import MDinput from '@/components/MDinput'
   import MarkdownEditor from '@/components/MarkdownEditor'
-  import {createArticle} from '@/api/article'
+  import {createArticle, fetchArticle} from '@/api/article'
 
   const defaultForm = {
     title: '',
@@ -107,20 +107,7 @@
         article: Object.assign({}, defaultForm),
         options: [{
           value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶',
-          disabled: true
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
+          label: '选项1'
         }],
       }
     },
@@ -162,6 +149,18 @@
       fetchData() {
         fetchArticle(this.$route.query.id).then(response => {
           const article = response.data
+          article.createdAt = article.created_on
+          article.status = article.status.toString()
+          if (article.tags == null){
+            article.tags = []
+          }else{
+            var tags=[]
+            var i
+            for (i in article.tags){
+              tags.push(article.tags[i].name)
+            }
+            article.tags = tags
+          }
           Object.assign(this.article, article)
         })
       }
