@@ -16,3 +16,27 @@ func GetPage(c *gin.Context) int {
 
 	return result
 }
+
+func GetLimit(c *gin.Context) int {
+	result := setting.AppSetting.PageSize
+	limit, _ := com.StrTo(c.Query("limit")).Int()
+	if limit > 0 {
+		result = limit
+	}
+	return result
+}
+
+func GetPageAndLimit(c *gin.Context) (page int, limit int) {
+	limit = setting.AppSetting.PageSize
+	query_limit, _ := com.StrTo(c.Query("limit")).Int()
+	if query_limit > 0 {
+		limit = query_limit
+	}
+
+	page = 0
+	query_page, _ := com.StrTo(c.Query("page")).Int()
+	if query_page > 0 {
+		page = (query_page - 1) * limit
+	}
+	return
+}

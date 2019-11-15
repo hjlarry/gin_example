@@ -12,7 +12,6 @@ import (
 	"gin_example/pkg/app"
 	"gin_example/pkg/e"
 	"gin_example/pkg/qrcode"
-	"gin_example/pkg/setting"
 	"gin_example/pkg/util"
 	"gin_example/service/article_service"
 	"gin_example/service/tag_service"
@@ -84,10 +83,11 @@ func GetArticles(c *gin.Context) {
 		return
 	}
 
+	page, limit := util.GetPageAndLimit(c)
 	articleService := article_service.Article{
 		TagID:    tagId,
-		PageNum:  util.GetPage(c),
-		PageSize: setting.AppSetting.PageSize,
+		PageNum:  page,
+		PageSize: limit,
 	}
 
 	total, err := articleService.Count()

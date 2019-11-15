@@ -29,7 +29,7 @@
         </template>
       </el-table-column>
       <el-table-column label="Tags" width="400" align="center">
-        <template slot-scope="scope" >
+        <template slot-scope="scope">
           <el-tag v-for="tag in scope.row.tags" v-bind:key="tag.id" style="margin-right: 3px;">{{tag.name}}</el-tag>
         </template>
       </el-table-column>
@@ -51,11 +51,17 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="pagination-container">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                     :current-page="listQuery.page" :page-sizes="[5,10,20,30,50]" :page-size="listQuery.limit"
+                     layout="total, sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
-  import {getList} from '@/api/article'
+  import {fetchList} from '@/api/article'
 
   export default {
     filters: {
@@ -79,17 +85,23 @@
     data() {
       return {
         list: null,
-        listLoading: true
+        total: null,
+        listLoading: true,
+        listQuery: {
+          page: 1,
+          limit: 10,
+        }
       }
     },
     created() {
-      this.fetchData()
+      this.getList()
     },
     methods: {
-      fetchData() {
+      getList() {
         this.listLoading = true
-        getList().then(response => {
+        fetchList(this.listQuery).then(response => {
           this.list = response.data.lists
+          this.total = response.data.total
           this.listLoading = false
         })
       },
@@ -98,7 +110,22 @@
           path: '/article/edit',
           query: {'id': row.id}
         })
-      }
+      },
+      handleSizeChange(val) {
+        this.listQuery.limit = val
+        this.getList()
+      },
+      handleCurrentChange(val) {
+        this.listQuery.page = val
+        this.getList()
+      },
     }
   }
 </script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+  .pagination-container {
+    float: right;
+    margin-top: 20px;
+  }
+</style>

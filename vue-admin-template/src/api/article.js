@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getList(params) {
+export function fetchList(params) {
   return request({
     url: '/articles',
     method: 'get',
