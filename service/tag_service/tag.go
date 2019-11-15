@@ -31,8 +31,15 @@ type TagServe struct {
 	Tags      []string
 }
 
-func (t *TagServe) UpdateMulti() error {
-	err := models.UpdateMultiTags([]string{}, t.Tags, t.ArticleId)
+func (t *TagServe) UpdateMulti(getOriginFlag bool) error {
+	originTags := []string{}
+	if getOriginFlag {
+		_originTags, _ := models.GetTagsByArticleID(t.ArticleId)
+		for _, tag := range _originTags {
+			originTags = append(originTags, tag.Name)
+		}
+	}
+	err := models.UpdateMultiTags(originTags, t.Tags, t.ArticleId)
 	return err
 }
 

@@ -101,7 +101,8 @@ func GetArticles(c *gin.Context) {
 
 }
 
-type AddArticleForm struct {
+// why can`t use `form:created_at` underscore
+type ArticleForm struct {
 	Title      string   `form:"title" valid:"Required;MaxSize(100)"`
 	Slug       string   `form:"slug" valid:"MaxSize(100)"`
 	Summary    string   `form:"summary"`
@@ -110,6 +111,26 @@ type AddArticleForm struct {
 	CanComment bool     `form:"canComment"`
 	Tags       []string `form:"tags"`
 	CreatedAt  string   `form:"createdAt"`
+}
+
+func getArticleService(form *ArticleForm) article_service.Article {
+	status, _ := strconv.Atoi(form.Status)
+	var createdAt time.Time
+	if form.CreatedAt != "" {
+		createdAt, _ = time.Parse("2006-01-02T15:04:05.000Z", form.CreatedAt)
+	} else {
+		createdAt = time.Now()
+	}
+	articleService := article_service.Article{
+		Title:      form.Title,
+		Slug:       form.Slug,
+		Summary:    form.Summary,
+		Content:    form.Content,
+		CanComment: form.CanComment,
+		Status:     status,
+		CreatedAt:  &createdAt,
+	}
+	return articleService
 }
 
 // @Summary Add article
@@ -121,7 +142,7 @@ type AddArticleForm struct {
 // @Router /api/v1/articles [post]
 func AddArticle(c *gin.Context) {
 	appG := app.Gin{C: c}
-	var form AddArticleForm
+	var form ArticleForm
 
 	httpCode, errCode := app.BindAndValid(c, &form)
 	if errCode != e.SUCCESS {
@@ -129,23 +150,7 @@ func AddArticle(c *gin.Context) {
 		return
 	}
 
-	status, _ := strconv.Atoi(form.Status)
-	var createdAt time.Time
-	if form.CreatedAt != "" {
-		createdAt, _ = time.Parse("2006-01-02T15:04:05.000Z", form.CreatedAt)
-	} else {
-		createdAt = time.Now()
-	}
-
-	articleService := article_service.Article{
-		Title:      form.Title,
-		Slug:       form.Slug,
-		Summary:    form.Summary,
-		Content:    form.Content,
-		CanComment: form.CanComment,
-		Status:     status,
-		CreatedAt:  &createdAt,
-	}
+	articleService := getArticleService(&form)
 	articleId, err := articleService.Add()
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_ARTICLE_FAIL, nil)
@@ -153,7 +158,7 @@ func AddArticle(c *gin.Context) {
 	}
 
 	tagService := tag_service.TagServe{ArticleId: articleId, Tags: form.Tags}
-	if err := tagService.UpdateMulti(); err != nil {
+	if err := tagService.UpdateMulti(false); err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_TAG_FAIL, nil)
 		return
 	}
@@ -162,48 +167,38 @@ func AddArticle(c *gin.Context) {
 
 }
 
-type EditArticleForm struct {
-	ID            int    `form:"id" valid:"Required;Min(1)"`
-	TagID         int    `form:"tag_id" valid:"Required;Min(1)"`
-	Title         string `form:"title" valid:"Required;MaxSize(100)"`
-	Desc          string `form:"desc" valid:"Required;MaxSize(255)"`
-	Content       string `form:"content" valid:"Required;MaxSize(65535)"`
-	ModifiedBy    string `form:"modified_by" valid:"Required;MaxSize(100)"`
-	CoverImageUrl string `form:"cover_image_url" valid:"Required;MaxSize(255)"`
-	State         int    `form:"state" valid:"Range(0,1)"`
-}
-
 // @Summary Update article
 // @Produce  json
 // @Param id path int true "ID"
-// @Param tag_id body string false "TagID"
-// @Param title body string false "Title"
-// @Param desc body string false "Desc"
 // @Param content body string false "Content"
-// @Param modified_by body string true "ModifiedBy"
 // @Param state body int false "State"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /api/v1/articles/{id} [put]
 func EditArticle(c *gin.Context) {
 	appG := app.Gin{C: c}
-	var form EditArticleForm
+	valid := validation.Validation{}
+	id := com.StrTo(c.Param("id")).MustInt()
+	valid.Min(id, 1, "id").Message("ID必须大于0")
 
+	var form ArticleForm
 	httpCode, errCode := app.BindAndValid(c, &form)
 	if errCode != e.SUCCESS {
 		appG.Response(httpCode, errCode, nil)
 		return
 	}
 
-	articleService := article_service.Article{
-		ID:    form.ID,
-		TagID: form.TagID,
-		Title: form.Title,
-	}
-
+	articleService := getArticleService(&form)
+	articleService.ID = id
 	err := articleService.Edit()
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_EDIT_ARTICLE_FAIL, nil)
+		return
+	}
+
+	tagService := tag_service.TagServe{ArticleId: id, Tags: form.Tags}
+	if err := tagService.UpdateMulti(true); err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_TAG_FAIL, nil)
 		return
 	}
 

@@ -51,7 +51,6 @@ func GetArticle(id int) (*Article, error) {
 
 func EditArticle(id int, data interface{}) error {
 	err := db.Model(&Article{}).Where("id = ?", id).Updates(data).Error
-
 	return err
 }
 

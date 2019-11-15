@@ -81,7 +81,7 @@
 <script>
   import MDinput from '@/components/MDinput'
   import MarkdownEditor from '@/components/MarkdownEditor'
-  import {createArticle, fetchArticle} from '@/api/article'
+  import {createArticle, fetchArticle, editArticle} from '@/api/article'
 
   const defaultForm = {
     title: '',

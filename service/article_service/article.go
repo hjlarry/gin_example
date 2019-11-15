@@ -94,8 +94,8 @@ func (a *Article) getMaps() map[string]interface{} {
 	return maps
 }
 
-func (a *Article) Add() (int, error) {
-	article := map[string]interface{}{
+func (a *Article) getModifyData() map[string]interface{} {
+	return map[string]interface{}{
 		"title":       a.Title,
 		"slug":        a.Slug,
 		"summary":     a.Summary,
@@ -104,7 +104,10 @@ func (a *Article) Add() (int, error) {
 		"status":      a.Status,
 		"created_at":  a.CreatedAt,
 	}
-	articleId, err := models.AddArticle(article)
+}
+
+func (a *Article) Add() (int, error) {
+	articleId, err := models.AddArticle(a.getModifyData())
 	if err != nil {
 		return -1, err
 	}
@@ -112,11 +115,7 @@ func (a *Article) Add() (int, error) {
 }
 
 func (a *Article) Edit() error {
-	article := map[string]interface{}{
-		"title":  a.Title,
-		"status": a.Status,
-	}
-	if err := models.EditArticle(a.ID, article); err != nil {
+	if err := models.EditArticle(a.ID, a.getModifyData()); err != nil {
 		return err
 	}
 	return nil

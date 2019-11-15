@@ -130,9 +130,3 @@ func DeleteTag(id int) error {
 
 	return err
 }
-
-func EditTag(id int, data interface{}) error {
-	err := db.Model(&Tag{}).Where("id = ?", id).Updates(data).Error
-
-	return err
-}
