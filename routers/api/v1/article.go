@@ -88,6 +88,7 @@ func GetArticles(c *gin.Context) {
 		TagID:    tagId,
 		PageNum:  page,
 		PageSize: limit,
+		Status:   state,
 	}
 
 	total, err := articleService.Count()

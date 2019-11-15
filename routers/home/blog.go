@@ -6,7 +6,9 @@ import (
 	"gin_example/service/article_service"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
+	"github.com/gomarkdown/markdown"
 	"github.com/unknwon/com"
+	"html/template"
 	"net/http"
 )
 
@@ -36,7 +38,11 @@ func GetArticle(c *gin.Context) {
 		return
 	}
 
+	content := markdown.ToHTML([]byte(article.Content), nil, nil)
+	htmlContent := template.HTML(content)
+
 	appG.C.HTML(http.StatusOK, "article.html", gin.H{
-		"article": article,
+		"article":     article,
+		"htmlContent": htmlContent,
 	})
 }
