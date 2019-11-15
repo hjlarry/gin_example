@@ -81,10 +81,6 @@ func (a *Article) GetAll() ([]*models.Article, error) {
 	return articles, nil
 }
 
-func (a *Article) ExistByID() (bool, error) {
-	return models.ExistArticleByID(a.ID)
-}
-
 func (a *Article) Count() (int, error) {
 	return models.GetArticleTotal(a.getMaps())
 }

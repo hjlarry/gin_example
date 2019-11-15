@@ -22,20 +22,6 @@ type Article struct {
 	User User   `gorm:"-" json:"-"`
 }
 
-func ExistArticleByID(id int) (bool, error) {
-	var article Article
-	err := db.Select("id").Where("id = ?", id).First(&article).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return false, err
-	}
-
-	if article.ID > 0 {
-		return true, nil
-	}
-
-	return false, nil
-}
-
 func GetArticleTotal(maps interface{}) (int, error) {
 	var count int
 	err := db.Model(&Article{}).Where(maps).Count(&count).Error
@@ -60,7 +46,6 @@ func GetArticle(id int) (*Article, error) {
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
-
 	return &article, err
 }
 

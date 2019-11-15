@@ -37,16 +37,6 @@ func GetArticle(c *gin.Context) {
 	}
 
 	articleService := article_service.Article{ID: id}
-	exists, err := articleService.ExistByID()
-	if err != nil {
-		appG.Response(http.StatusOK, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
-		return
-	}
-	if !exists {
-		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
-		return
-	}
-
 	article, err := articleService.Get()
 	if err != nil {
 		appG.Response(http.StatusOK, e.ERROR_GET_ARTICLE_FAIL, nil)
@@ -210,28 +200,8 @@ func EditArticle(c *gin.Context) {
 		TagID: form.TagID,
 		Title: form.Title,
 	}
-	exists, err := articleService.ExistByID()
-	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
-		return
-	}
-	if !exists {
-		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
-		return
-	}
 
-	tagService := tag_service.Tag{ID: form.TagID}
-	exists, err = tagService.ExistByID()
-	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_EXIST_TAG_FAIL, nil)
-		return
-	}
-	if !exists {
-		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_TAG, nil)
-		return
-	}
-
-	err = articleService.Edit()
+	err := articleService.Edit()
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_EDIT_ARTICLE_FAIL, nil)
 		return
@@ -259,17 +229,7 @@ func DeleteArticle(c *gin.Context) {
 	}
 
 	articleService := article_service.Article{ID: id}
-	exists, err := articleService.ExistByID()
-	if err != nil {
-		appG.Response(http.StatusOK, e.ERROR_CHECK_EXIST_ARTICLE_FAIL, nil)
-		return
-	}
-	if !exists {
-		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
-		return
-	}
-
-	err = articleService.Delete()
+	err := articleService.Delete()
 	if err != nil {
 		appG.Response(http.StatusOK, e.ERROR_DELETE_ARTICLE_FAIL, nil)
 		return

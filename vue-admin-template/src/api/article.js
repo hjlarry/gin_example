@@ -15,3 +15,10 @@ export function createArticle(data) {
     data
   })
 }
+
+export function deleteArticle(id) {
+  return request({
+    url: '/articles/' + id,
+    method: 'delete',
+  })
+}

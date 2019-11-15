@@ -47,7 +47,7 @@
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger">删除</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-  import {fetchList} from '@/api/article'
+  import {fetchList, deleteArticle} from '@/api/article'
 
   export default {
     filters: {
@@ -109,6 +109,22 @@
         this.$router.push({
           path: '/article/edit',
           query: {'id': row.id}
+        })
+      },
+      handleDelete(row) {
+        const index = this.list.indexOf(row)
+        const confirm = this.$confirm(`确定移除` + row.title + '?')
+        confirm.then(() => {
+          deleteArticle(row.id).then(() => {
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.list.splice(index, 1)
+          })
+        }).catch(() => {
         })
       },
       handleSizeChange(val) {
