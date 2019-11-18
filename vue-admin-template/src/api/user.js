@@ -22,3 +22,12 @@ export function logout() {
     method: 'post'
   })
 }
+
+
+export function fetchUsers(params) {
+  return request({
+    url: '/users',
+    method: 'get',
+    params
+  })
+}

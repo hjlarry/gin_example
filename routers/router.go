@@ -46,15 +46,9 @@ func InitRouter() *gin.Engine {
 	// apiv1.Use(jwt.JWT())
 	{
 		apiv1.GET("/user/info", api.InfoForTest)
-		//获取标签列表
-		apiv1.GET("/tags", v1.GetTags)
-		//新建标签
-		apiv1.POST("/tags", v1.AddTag)
-		//更新指定标签
-		apiv1.PUT("/tags/:id", v1.EditTag)
-		//删除指定标签
-		apiv1.DELETE("/tags/:id", v1.DeleteTag)
 
+		apiv1.GET("/tags", v1.GetTags)
+		apiv1.DELETE("/tags/:id", v1.DeleteTag)
 		r.POST("/tags/export", v1.ExportTag)
 		r.POST("/tags/import", v1.ImportTag)
 
@@ -64,6 +58,8 @@ func InitRouter() *gin.Engine {
 		apiv1.PUT("/articles/:id", v1.EditArticle)
 		apiv1.DELETE("/articles/:id", v1.DeleteArticle)
 		apiv1.POST("/articles/poster/generate", v1.GenerateArticlePoster)
+
+		apiv1.GET("/users", v1.GetUsers)
 	}
 	return r
 }
