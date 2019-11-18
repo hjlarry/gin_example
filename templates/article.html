@@ -1,4 +1,22 @@
 {{template "head.html"}}
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+<!-- code syntax highlighting -->
+<script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css" />
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("h2,h3").each(function(i,item){
+            var tag = $(item).get(0).localName;
+            $(item).attr("id","wow"+i);
+            $(".toc-article").append('<a class="new'+tag+'" href="#wow'+i+'">'+$(this).text()+'</a></br>');
+            $(".newh2").css("margin-left",0);
+            $(".newh3").css("margin-left",20);
+        });
+    });
+</script>
+
 {{template "nav.html"}}
 
 <div class="container" id="content-outer">
@@ -33,8 +51,13 @@
                 </div>
 
             </article>
-            <div class="toc-container">
-                // TODO TOC
+            <div class="toc-container"  id="toc-container">
+                <div id="toc" class="toc-article">
+                    <strong class="toc-title">目录</strong>
+                    <div style="max-height: calc(100vh - 120px); overflow: hidden; overflow-y: auto;">
+                        <nav class="nav flex-column" id="post-toc"></nav>
+                    </div>
+                </div>
             </div>
         </div>
 
