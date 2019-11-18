@@ -1,10 +1,8 @@
 package home
 
 import (
-	"gin_example/pkg/app"
-	"gin_example/pkg/e"
+	"gin_example/pkg/logging"
 	"gin_example/service/article_service"
-	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/gomarkdown/markdown"
 	"github.com/unknwon/com"
@@ -19,29 +17,19 @@ func Index(c *gin.Context) {
 }
 
 func GetArticle(c *gin.Context) {
-	appG := app.Gin{C: c}
 	id := com.StrTo(c.Param("id")).MustInt()
-
-	valid := validation.Validation{}
-	valid.Min(id, 1, "id").Message("ID必须大于0")
-
-	if valid.HasErrors() {
-		app.MarkErrors(valid.Errors)
-		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
-		return
-	}
-
 	articleService := article_service.Article{ID: id}
 	article, err := articleService.Get()
 	if err != nil {
-		appG.Response(http.StatusOK, e.ERROR_GET_ARTICLE_FAIL, nil)
+		logging.Info(err)
+		_ = c.AbortWithError(http.StatusNotFound, err)
 		return
 	}
 
 	content := markdown.ToHTML([]byte(article.Content), nil, nil)
 	htmlContent := template.HTML(content)
 
-	appG.C.HTML(http.StatusOK, "article.html", gin.H{
+	c.HTML(http.StatusOK, "article.html", gin.H{
 		"article":     article,
 		"htmlContent": htmlContent,
 	})

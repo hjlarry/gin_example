@@ -40,12 +40,15 @@ func (a *Article) Get() (*models.Article, error) {
 		}
 	}
 	article, err := models.GetArticle(a.ID)
-	tags, err := models.GetTagsByArticleID(a.ID)
-	article.Tags = tags
-	article.CreatedAt = util.DateFormat(*article.CreatedOn, "2006-01-02 15:04")
 	if err != nil {
 		return nil, err
 	}
+	tags, err := models.GetTagsByArticleID(a.ID)
+	if err != nil {
+		return nil, err
+	}
+	article.Tags = tags
+	article.CreatedAt = util.DateFormat(*article.CreatedOn, "2006-01-02 15:04")
 	_ = gredis.Set(key, article, 3600)
 	return article, nil
 }
