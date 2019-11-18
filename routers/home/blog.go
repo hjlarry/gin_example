@@ -11,8 +11,27 @@ import (
 )
 
 func Index(c *gin.Context) {
+	articleService := article_service.Article{
+		Status:   1,
+		PageSize: 10,
+	}
+
+	total, err := articleService.Count()
+	if err != nil {
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	articles, err := articleService.GetAll()
+	if err != nil {
+		_ = c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
 	c.HTML(http.StatusOK, "index.html", gin.H{
-		"title": "My Blog",
+		"title":    "My Blog",
+		"articles": articles,
+		"total":    total,
 	})
 }
 

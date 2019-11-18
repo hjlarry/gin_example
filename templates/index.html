@@ -3,7 +3,30 @@
 
 <div class="container" id="content-outer">
     <div class="inner" id="content-inner">
+        <div class="recent-posts">
+            {{ range .articles }}
+                <article class="recent-post-item">
+                    <a class="title" href="/articles/{{.ID}}"><h2>{{.Title}}</h2></a>
+                    <div class="post-meta">
+                        <time class="time" datetime="{{dateFormat .CreatedOn "2006-01-02 15:04" }}">
+                            {{dateFormat .CreatedOn "2006-01-02 15:04" }}
+                        </time>
+                        <span class="slash">/</span>
+                        {{$PTGS := .Tags }}
+                        <ul class="index-tag-list">
+                            {{ range $k,$v := $PTGS}}
+                                <li class="index-tag-list-item"><a class="index-tag-list-link" href="/tag/{{$v.ID}}">{{$v.Name}}</a></li>
+                            {{end}}
+                        </ul>
+                    </div>
+                    <div class="post-excerpt">
+                        <p>{{.Summary}}</p>
+                    </div>
 
+                    <a class="more" href="/articles/{{.ID}}"> 阅读全文 〉</a>
+                </article>
+            {{end}}
+        </div>
     </div>
 </div>
 
