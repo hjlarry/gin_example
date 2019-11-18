@@ -11,6 +11,7 @@ type App struct {
 	JwtSecret string
 	PageSize  int
 	PrefixUrl string
+	AuthSalt  string
 
 	RuntimeRootPath string
 

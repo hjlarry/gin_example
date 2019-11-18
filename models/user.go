@@ -3,9 +3,9 @@ package models
 type User struct {
 	Model
 	Email    string `json:"email"`
-	Name     string `json:"username" gorm:"unique_index"`
+	Username string `json:"username" gorm:"unique_index"`
 	Password string
-	Active   int `gorm:"default:'1'"`
+	Active   bool `json:"active"`
 }
 
 type GithubUser struct {
@@ -19,10 +19,21 @@ type GithubUser struct {
 
 func CheckAuth(username, password string) bool {
 	var user User
-	db.Select("id").Where(User{Name: username, Password: password}).First(&user)
+	db.Select("id").Where(User{Username: username, Password: password}).First(&user)
 	if user.ID > 0 {
 		return true
 	}
 
 	return false
+}
+
+func AddUser(data map[string]interface{}) error {
+	user := User{
+		Username: data["username"].(string),
+		Email:    data["email"].(string),
+		Password: data["password"].(string),
+		Active:   data["active"].(bool),
+	}
+	err := db.Create(&user).Error
+	return err
 }

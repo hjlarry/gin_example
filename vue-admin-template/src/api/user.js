@@ -31,3 +31,34 @@ export function fetchUsers(params) {
     params
   })
 }
+
+
+export function createUser(data) {
+  return request({
+    url: '/users',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteUser(id) {
+  return request({
+    url: '/users/' + id,
+    method: 'delete',
+  })
+}
+
+export function editUser(data) {
+  return request({
+    url: '/users/' + data.id,
+    method: 'put',
+    data
+  })
+}
+
+export function fetchUser(id) {
+  return request({
+    url: '/users/' + id,
+    method: 'get'
+  })
+}
