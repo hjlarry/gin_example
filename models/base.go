@@ -18,6 +18,7 @@ type Model struct {
 	CreatedOn  *time.Time `json:"-"`
 	ModifiedOn *time.Time `json:"-"`
 	CreatedAt  string     `gorm:"-" json:"created_on"`
+	ModifiedAt string     `gorm:"-" json:"modified_on"`
 }
 
 func Setup() {

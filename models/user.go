@@ -1,5 +1,7 @@
 package models
 
+import "github.com/jinzhu/gorm"
+
 type User struct {
 	Model
 	Email    string `json:"email"`
@@ -36,4 +38,22 @@ func AddUser(data map[string]interface{}) error {
 	}
 	err := db.Create(&user).Error
 	return err
+}
+
+func GetUsers(pageNum int, pageSize int, maps interface{}) ([]*User, error) {
+	var users []*User
+	err := db.Where(maps).Offset(pageNum).Limit(pageSize).Order("id desc").Find(&users).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+	return users, nil
+}
+
+func GetUserTotal(maps interface{}) (int, error) {
+	var count int
+	err := db.Model(&User{}).Where(maps).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
 }

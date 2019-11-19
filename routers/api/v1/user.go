@@ -3,6 +3,7 @@ package v1
 import (
 	"gin_example/pkg/app"
 	"gin_example/pkg/e"
+	"gin_example/pkg/util"
 	"gin_example/service/user_service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -11,9 +12,27 @@ import (
 func GetUsers(c *gin.Context) {
 	appG := app.Gin{C: c}
 
+	page, limit := util.GetPageAndLimit(c)
+	userService := user_service.User{
+		PageNum:  page,
+		PageSize: limit,
+	}
+
+	total, err := userService.Count()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_COUNT_ARTICLE_FAIL, nil)
+		return
+	}
+
+	users, err := userService.GetAll()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_GET_ARTICLES_FAIL, nil)
+		return
+	}
+
 	data := make(map[string]interface{})
-	data["lists"] = []string{}
-	data["total"] = 100
+	data["lists"] = users
+	data["total"] = total
 
 	appG.Response(http.StatusOK, e.SUCCESS, data)
 

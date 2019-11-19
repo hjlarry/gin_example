@@ -7,7 +7,9 @@ import (
 )
 
 type User struct {
-	ID int
+	ID       int
+	PageNum  int
+	PageSize int
 
 	Username string
 	Email    string
@@ -24,4 +26,17 @@ func (u *User) Add() error {
 		"active":   u.Active,
 	}
 	return models.AddUser(data)
+}
+
+func (u *User) GetAll() ([]*models.User, error) {
+	users, err := models.GetUsers(u.PageNum, u.PageSize, map[string]interface{}{})
+	for _, u := range users {
+		u.CreatedAt = util.DateFormat(*u.CreatedOn, "2006-01-02 15:04")
+		u.ModifiedAt = util.DateFormat(*u.ModifiedOn, "2006-01-02 15:04")
+	}
+	return users, err
+}
+
+func (u *User) Count() (int, error) {
+	return models.GetUserTotal(map[string]interface{}{})
 }

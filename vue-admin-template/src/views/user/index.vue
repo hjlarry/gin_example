@@ -29,15 +29,21 @@
         </template>
       </el-table-column>
 
-      <el-table-column class-name="status-col" label="Status" width="110" align="center">
+      <el-table-column class-name="status-col" label="Actived" width="110" align="center">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusLabelFilter">{{ scope.row.status | statusFilter }}</el-tag>
+          <el-tag :type="scope.row.active | activeLabelFilter">{{ scope.row.active | activeFilter}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="Created At" width="200">
         <template slot-scope="scope">
           <i class="el-icon-time"/>
           <span>{{ scope.row.created_on }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="modified_at" label="Modified At" width="200">
+        <template slot-scope="scope">
+          <i class="el-icon-time"/>
+          <span>{{ scope.row.modified_on }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
@@ -61,21 +67,13 @@
 
   export default {
     filters: {
-      statusFilter(status) {
-        const statusMap = {
-          1: 'actived',
-          0: 'not active',
-          2: 'deleted'
-        }
-        return statusMap[status]
+      activeLabelFilter(active) {
+        if (active) return "success"
+        return "info"
       },
-      statusLabelFilter(status) {
-        const statusMap = {
-          1: 'success',
-          0: 'warning',
-          2: 'danger'
-        }
-        return statusMap[status]
+      activeFilter(active) {
+        if (active) return "Yes"
+        return "No"
       }
     },
     data() {
