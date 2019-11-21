@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="article">
-      <el-form-item>
+    <el-form ref="article" :model="article" :rules="rules">
+      <el-form-item prop="title">
         <el-col :span="11">
-          <MDinput name="name" v-model="article.title" :required="true" :maxlength="100">
+          <MDinput name="name" v-model="article.title" required :maxlength="100">
             标题
           </MDinput>
         </el-col>
@@ -15,15 +15,15 @@
         </el-col>
       </el-form-item>
 
-      <el-form-item style="margin-bottom: 40px;" prop="summary">
+      <el-form-item prop="summary">
         <MDinput name="name" v-model="article.summary" :maxlength="255">
           Summary
         </MDinput>
       </el-form-item>
 
-      <div class="editor-container">
+      <el-form-item prop="content" class="editor-container" >
         <MarkdownEditor ref="editor" v-model="article.content"></MarkdownEditor>
-      </div>
+      </el-form-item>
 
       <el-form-item>
         <el-col :span="11">
@@ -71,7 +71,7 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">提交</el-button>
+        <el-button type="primary" @click="submitForm">提交</el-button>
         <el-button @click="onClear">清空</el-button>
       </el-form-item>
     </el-form>
@@ -103,12 +103,27 @@
       }
     },
     data() {
+      const validateRequire = (rule, value, callback) => {
+        if (value === '') {
+          this.$message({
+            message: rule.field + '为必传项',
+            type: 'error'
+          })
+          callback(new Error(rule.field + '为必传项'))
+        } else {
+          callback()
+        }
+      }
       return {
         article: Object.assign({}, defaultForm),
         options: [{
           value: '选项1',
           label: '选项1'
         }],
+        rules: {
+          title: [{ validator: validateRequire }],
+          content: [{ validator: validateRequire }],
+        },
       }
     },
     created() {
@@ -117,6 +132,15 @@
       }
     },
     methods: {
+      submitForm() {
+        this.$refs.article.validate(valid => {
+          if (valid) {
+            this.onSubmit()
+          } else {
+            return false
+          }
+        })
+      },
       onSubmit() {
         if (this.isEdit) {
           editArticle(this.article).then(response => {
@@ -168,19 +192,4 @@
   }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
-  .editor-container {
-    min-height: 500px;
-    margin: 0 0 30px;
 
-  .editor-upload-btn-container {
-    text-align: right;
-    margin-right: 10px;
-
-  .editor-upload-btn {
-    display: inline-block;
-  }
-
-  }
-  }
-</style>

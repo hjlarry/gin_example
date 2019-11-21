@@ -1,27 +1,25 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="user">
+    <el-form ref="user" :model="user" :rules="rules">
 
 
-      <el-form-item prop="summary">
+      <el-form-item prop="username">
         <MDinput name="name" v-model="user.username" :maxlength="20" :readonly="isEdit">
           Username
         </MDinput>
       </el-form-item>
 
-      <el-form-item prop="summary">
+      <el-form-item prop="password">
         <MDinput name="name" v-model="user.password" :maxlength="64" type="password">
           Password
         </MDinput>
       </el-form-item>
 
-      <el-form-item prop="summary">
+      <el-form-item prop="email">
         <MDinput name="name" v-model="user.email" :maxlength="20" type="email" required>
           Email
         </MDinput>
       </el-form-item>
-
-
 
       <el-form-item>
         <el-col :span="11">
@@ -30,7 +28,7 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">提交</el-button>
+        <el-button type="primary" @click="submitForm">提交</el-button>
         <el-button @click="onClear">清空</el-button>
       </el-form-item>
     </el-form>
@@ -39,7 +37,7 @@
 
 <script>
   import MDinput from '@/components/MDinput'
-  import {createUser, fetchUser, editUser} from '@/api/user'
+  import {createUser, editUser, fetchUser} from '@/api/user'
 
   const defaultForm = {
     username: '',
@@ -57,8 +55,46 @@
       }
     },
     data() {
+      const validateRequire = (rule, value, callback) => {
+        if (value === '') {
+          this.$message({
+            message: rule.field + '为必传项',
+            type: 'error'
+          })
+          callback(new Error(rule.field + '为必传项'))
+        } else {
+          callback()
+        }
+      }
+
+      const validatePassword = (rule, value, callback) => {
+        if ((!this.isEdit) && (value === '')) {
+          this.$message({
+            message: rule.field + '为必传项',
+            type: 'error'
+          })
+          callback(new Error('密码为必传项'))
+        } else if (this.isEdit && value !== '') {
+          if (value.length <= 3) {
+            this.$message({
+              message: '密码需大于三位',
+              type: 'error'
+            })
+            callback(new Error('密码需大于三位'))
+          } else {
+            callback()
+          }
+        } else {
+          callback()
+        }
+      }
       return {
         user: Object.assign({}, defaultForm),
+        rules: {
+          username: [{validator: validateRequire}],
+          email: [{validator: validateRequire}],
+          password: [{validator: validatePassword}],
+        },
       }
     },
     created() {
@@ -67,6 +103,15 @@
       }
     },
     methods: {
+      submitForm() {
+        this.$refs.user.validate(valid => {
+          if (valid) {
+            this.onSubmit()
+          } else {
+            return false
+          }
+        })
+      },
       onSubmit() {
         if (this.isEdit) {
           editUser(this.user).then(response => {
