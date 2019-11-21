@@ -66,20 +66,16 @@
   export default {
     filters: {
       statusFilter(status) {
-        const statusMap = {
-          1: 'published',
-          0: 'draft',
-          2: 'deleted'
+        if (status){
+          return 'published'
         }
-        return statusMap[status]
+        return 'draft'
       },
       statusLabelFilter(status) {
-        const statusMap = {
-          1: 'success',
-          0: 'warning',
-          2: 'danger'
+        if (status){
+          return 'success'
         }
-        return statusMap[status]
+        return 'info'
       }
     },
     data() {

@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
 	"net/http"
-	"strconv"
 	"time"
 
 	"gin_example/pkg/app"
@@ -78,7 +77,6 @@ func GetArticles(c *gin.Context) {
 		TagID:    tagId,
 		PageNum:  page,
 		PageSize: limit,
-		Status:   state,
 	}
 
 	total, err := articleService.Count()
@@ -107,14 +105,13 @@ type ArticleForm struct {
 	Slug       string   `form:"slug" valid:"MaxSize(100)"`
 	Summary    string   `form:"summary"`
 	Content    string   `form:"content" valid:"Required;"`
-	Status     string   `form:"status"`
+	Status     bool     `form:"status"`
 	CanComment bool     `form:"canComment"`
 	Tags       []string `form:"tags"`
 	CreatedAt  string   `form:"createdAt"`
 }
 
 func getArticleService(form *ArticleForm) article_service.Article {
-	status, _ := strconv.Atoi(form.Status)
 	var createdAt time.Time
 	if form.CreatedAt != "" {
 		createdAt, _ = time.Parse("2006-01-02T15:04:05.000Z", form.CreatedAt)
@@ -127,7 +124,7 @@ func getArticleService(form *ArticleForm) article_service.Article {
 		Summary:    form.Summary,
 		Content:    form.Content,
 		CanComment: form.CanComment,
-		Status:     status,
+		Status:     form.Status,
 		CreatedAt:  &createdAt,
 	}
 	return articleService

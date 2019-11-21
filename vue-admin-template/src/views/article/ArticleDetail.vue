@@ -21,7 +21,7 @@
         </MDinput>
       </el-form-item>
 
-      <el-form-item prop="content" class="editor-container" >
+      <el-form-item prop="content" class="editor-container">
         <MarkdownEditor ref="editor" v-model="article.content"></MarkdownEditor>
       </el-form-item>
 
@@ -62,11 +62,7 @@
         <el-col :span="2">&nbsp;</el-col>
         <el-col :span="11">
           <label>Status</label>&nbsp;&nbsp;
-          <el-radio-group v-model="article.status">
-            <el-radio label="1">published</el-radio>
-            <el-radio label="0">draft</el-radio>
-            <el-radio label="2">deleted</el-radio>
-          </el-radio-group>
+          &nbsp;<el-switch v-model="article.status"/>
         </el-col>
       </el-form-item>
 
@@ -81,17 +77,17 @@
 <script>
   import MDinput from '@/components/MDinput'
   import MarkdownEditor from '@/components/MarkdownEditor'
-  import {createArticle, fetchArticle, editArticle} from '@/api/article'
+  import {createArticle, editArticle, fetchArticle} from '@/api/article'
 
   const defaultForm = {
     title: '',
     slug: '',
     summary: '',
     content: '',
-    status: '0',
+    status: false,
     canComment: true,
-    tags:[],
-    createdAt:'',
+    tags: [],
+    createdAt: '',
   }
   export default {
     name: 'articleDetail',
@@ -121,8 +117,8 @@
           label: '选项1'
         }],
         rules: {
-          title: [{ validator: validateRequire }],
-          content: [{ validator: validateRequire }],
+          title: [{validator: validateRequire}],
+          content: [{validator: validateRequire}],
         },
       }
     },
@@ -175,12 +171,12 @@
           const article = response.data
           article.createdAt = article.created_on
           article.status = article.status.toString()
-          if (article.tags == null){
+          if (article.tags == null) {
             article.tags = []
-          }else{
-            var tags=[]
+          } else {
+            var tags = []
             var i
-            for (i in article.tags){
+            for (i in article.tags) {
               tags.push(article.tags[i].name)
             }
             article.tags = tags

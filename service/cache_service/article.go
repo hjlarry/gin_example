@@ -9,7 +9,7 @@ import (
 type Article struct {
 	ID     int
 	TagID  int
-	Status int
+	Status bool
 
 	PageNum  int
 	PageSize int
@@ -31,8 +31,8 @@ func (a *Article) GetArticlesKey() string {
 	if a.TagID > 0 {
 		keys = append(keys, strconv.Itoa(a.TagID))
 	}
-	if a.Status >= 0 {
-		keys = append(keys, strconv.Itoa(a.Status))
+	if a.Status {
+		keys = append(keys, "TRUE")
 	}
 	if a.PageNum > 0 {
 		keys = append(keys, strconv.Itoa(a.PageNum))

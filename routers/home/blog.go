@@ -12,7 +12,7 @@ import (
 
 func Index(c *gin.Context) {
 	articleService := article_service.Article{
-		Status:   1,
+		Status:   true,
 		PageSize: 10,
 	}
 

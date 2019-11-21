@@ -13,7 +13,7 @@ type Article struct {
 	Slug          string `json:"slug"`
 	Summary       string `json:"summary"`
 	CanComment    bool   `json:"can_comment"`
-	Status        int    `json:"status"`
+	Status        bool   `json:"status"`
 	Type          int    `json:"-"`
 	Content       string `json:"content" gorm:"type:longtext"`
 	CoverImageUrl string `json:"cover_image_url"`
@@ -62,7 +62,7 @@ func AddArticle(data map[string]interface{}) (int, error) {
 		Summary:    data["summary"].(string),
 		Content:    data["content"].(string),
 		CanComment: data["can_comment"].(bool),
-		Status:     data["status"].(int),
+		Status:     data["status"].(bool),
 		Model: Model{
 			CreatedOn: data["created_at"].(*time.Time),
 		},

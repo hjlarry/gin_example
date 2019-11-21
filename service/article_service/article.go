@@ -13,7 +13,7 @@ import (
 type Article struct {
 	ID       int
 	TagID    int
-	Status   int
+	Status   bool
 	PageNum  int
 	PageSize int
 
@@ -91,9 +91,9 @@ func (a *Article) Count() (int, error) {
 
 func (a *Article) getMaps() map[string]interface{} {
 	maps := make(map[string]interface{})
-	if a.Status != -1 {
-		maps["status"] = a.Status
-	}
+	//if a.Status {
+	//	maps["status"] = a.Status
+	//}
 	return maps
 }
 
