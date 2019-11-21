@@ -40,3 +40,22 @@ func (u *User) GetAll() ([]*models.User, error) {
 func (u *User) Count() (int, error) {
 	return models.GetUserTotal(map[string]interface{}{})
 }
+
+func (u *User) Get() (*models.User, error) {
+	return models.GetUser(u.ID)
+}
+
+func (u *User) Edit() error {
+	data := map[string]interface{}{
+		"email":  u.Email,
+		"active": u.Active,
+	}
+	if u.Password != "" {
+		data["password"] = util.EncodeSha1(u.Password + setting.AppSetting.AuthSalt)
+	}
+	return models.EditUser(u.ID, data)
+}
+
+func (u *User) Delete() error {
+	return models.DeleteUser(u.ID)
+}

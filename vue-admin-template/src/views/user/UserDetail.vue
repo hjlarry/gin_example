@@ -4,7 +4,7 @@
 
 
       <el-form-item prop="summary">
-        <MDinput name="name" v-model="user.username" :maxlength="20">
+        <MDinput name="name" v-model="user.username" :maxlength="20" :readonly="isEdit">
           Username
         </MDinput>
       </el-form-item>
@@ -98,6 +98,7 @@
       },
       fetchData() {
         fetchUser(this.$route.query.id).then(response => {
+          const user = response.data
           Object.assign(this.user, user)
         })
       }

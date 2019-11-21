@@ -6,8 +6,8 @@ type User struct {
 	Model
 	Email    string `json:"email"`
 	Username string `json:"username" gorm:"unique_index"`
-	Password string
-	Active   bool `json:"active"`
+	Password string `json:"-"`
+	Active   bool   `json:"active"`
 }
 
 type GithubUser struct {
@@ -56,4 +56,23 @@ func GetUserTotal(maps interface{}) (int, error) {
 		return 0, err
 	}
 	return count, nil
+}
+
+func GetUser(id int) (*User, error) {
+	var user User
+	err := db.Where("id = ?", id).First(&user).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+	return &user, err
+}
+
+func EditUser(id int, data interface{}) error {
+	err := db.Model(&User{}).Where("id = ?", id).Updates(data).Error
+	return err
+}
+
+func DeleteUser(id int) error {
+	err := db.Where("id = ?", id).Delete(User{}).Error
+	return err
 }
