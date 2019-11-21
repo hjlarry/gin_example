@@ -19,7 +19,7 @@ export function createArticle(data) {
 export function deleteArticle(id) {
   return request({
     url: '/articles/' + id,
-    method: 'delete',
+    method: 'delete'
   })
 }
 

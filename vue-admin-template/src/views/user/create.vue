@@ -1,11 +1,11 @@
 <template>
-  <user-detail :is-edit='false'></user-detail>
+  <user-detail :is-edit="false" />
 </template>
 
 <script>
-  import UserDetail from './UserDetail'
-  export default {
-    name: 'createForm',
-    components: { UserDetail }
-  }
+import UserDetail from './UserDetail'
+export default {
+  name: 'CreateForm',
+  components: { UserDetail }
+}
 </script>

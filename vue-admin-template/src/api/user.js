@@ -23,7 +23,6 @@ export function logout() {
   })
 }
 
-
 export function fetchUsers(params) {
   return request({
     url: '/users',
@@ -31,7 +30,6 @@ export function fetchUsers(params) {
     params
   })
 }
-
 
 export function createUser(data) {
   return request({
@@ -44,7 +42,7 @@ export function createUser(data) {
 export function deleteUser(id) {
   return request({
     url: '/users/' + id,
-    method: 'delete',
+    method: 'delete'
   })
 }
 
