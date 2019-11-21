@@ -3,7 +3,7 @@
     <el-form ref="form" :model="article">
       <el-form-item>
         <el-col :span="11">
-          <MDinput name="name" v-model="article.title" required :maxlength="100">
+          <MDinput name="name" v-model="article.title" :required="true" :maxlength="100">
             标题
           </MDinput>
         </el-col>

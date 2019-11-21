@@ -16,7 +16,7 @@
       </el-form-item>
 
       <el-form-item prop="summary">
-        <MDinput name="name" v-model="user.email" :maxlength="20" type="email">
+        <MDinput name="name" v-model="user.email" :maxlength="20" type="email" required>
           Email
         </MDinput>
       </el-form-item>

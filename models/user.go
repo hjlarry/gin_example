@@ -76,3 +76,15 @@ func DeleteUser(id int) error {
 	err := db.Where("id = ?", id).Delete(User{}).Error
 	return err
 }
+
+func ExistUserByName(username string) (bool, error) {
+	var user User
+	err := db.Select("id").Where("username = ?", username).First(&user).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return false, err
+	}
+	if user.ID > 0 {
+		return true, nil
+	}
+	return false, nil
+}

@@ -63,7 +63,7 @@
 </template>
 
 <script>
-  import {fetchUsers} from '@/api/user'
+  import {fetchUsers, deleteUser} from '@/api/user'
 
   export default {
     filters: {

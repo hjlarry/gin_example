@@ -64,9 +64,9 @@ func GetUsers(c *gin.Context) {
 }
 
 type AddUserForm struct {
-	Username string `form:"username" valid:"Required;MaxSize(100)"`
-	Password string `form:"password" valid:"Required;MaxSize(100)"`
-	Email    string `form:"email"`
+	Username string `form:"username" valid:"Required;MaxSize(20)"`
+	Password string `form:"password" valid:"Required;MaxSize(20);MinSize(3)"`
+	Email    string `form:"email" valid:"Email"`
 	Active   bool   `form:"active"`
 }
 
@@ -86,7 +86,18 @@ func AddUser(c *gin.Context) {
 		Email:    form.Email,
 		Active:   form.Active,
 	}
-	err := userService.Add()
+
+	exists, err := userService.ExistByName()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_EXIST_USER_FAIL, nil)
+		return
+	}
+	if exists {
+		appG.Response(http.StatusOK, e.ERROR_EXIST_USER, nil)
+		return
+	}
+
+	err = userService.Add()
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_USER_FAIL, nil)
 		return
@@ -97,7 +108,7 @@ func AddUser(c *gin.Context) {
 }
 
 type EditUserForm struct {
-	Password string `form:"password" valid:"MaxSize(20);MinSize(3)"`
+	Password string `form:"password"`
 	Email    string `form:"email" valid:"Email"`
 	Active   bool   `form:"active"`
 }
@@ -114,9 +125,21 @@ func EditUser(c *gin.Context) {
 		appG.Response(httpCode, errCode, nil)
 		return
 	}
+
+	password := form.Password
+	if password != "" {
+		valid.MaxSize(password, 20, "password").Message("密码必须少于20位")
+		valid.MinSize(password, 3, "password").Message("密码必须大于3位")
+	}
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		return
+	}
+
 	userService := user_service.User{
 		ID:       id,
-		Password: form.Password,
+		Password: password,
 		Email:    form.Email,
 		Active:   form.Active,
 	}

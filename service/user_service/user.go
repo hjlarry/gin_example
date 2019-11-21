@@ -59,3 +59,7 @@ func (u *User) Edit() error {
 func (u *User) Delete() error {
 	return models.DeleteUser(u.ID)
 }
+
+func (u *User) ExistByName() (bool, error) {
+	return models.ExistUserByName(u.Username)
+}
