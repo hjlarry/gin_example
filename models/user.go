@@ -40,8 +40,9 @@ func AddUser(data map[string]interface{}) error {
 	return err
 }
 
-func GetUsers(pageNum int, pageSize int, maps interface{}) ([]*User, error) {
+func GetUsers(pageNum int, pageSize int, maps map[string]interface{}) ([]*User, error) {
 	var users []*User
+	maps["deleted_on"] = 0
 	err := db.Where(maps).Offset(pageNum).Limit(pageSize).Order("id desc").Find(&users).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
@@ -49,8 +50,9 @@ func GetUsers(pageNum int, pageSize int, maps interface{}) ([]*User, error) {
 	return users, nil
 }
 
-func GetUserTotal(maps interface{}) (int, error) {
+func GetUserTotal(maps map[string]interface{}) (int, error) {
 	var count int
+	maps["deleted_on"] = 0
 	err := db.Model(&User{}).Where(maps).Count(&count).Error
 	if err != nil {
 		return 0, err
@@ -60,7 +62,7 @@ func GetUserTotal(maps interface{}) (int, error) {
 
 func GetUser(id int) (*User, error) {
 	var user User
-	err := db.Where("id = ?", id).First(&user).Error
+	err := db.Where("id = ? AND deleted_on = ?", id, 0).First(&user).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}

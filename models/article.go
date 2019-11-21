@@ -22,8 +22,9 @@ type Article struct {
 	User User   `gorm:"-" json:"-"`
 }
 
-func GetArticleTotal(maps interface{}) (int, error) {
+func GetArticleTotal(maps map[string]interface{}) (int, error) {
 	var count int
+	maps["deleted_on"] = 0
 	err := db.Model(&Article{}).Where(maps).Count(&count).Error
 	if err != nil {
 		return 0, err
@@ -31,8 +32,9 @@ func GetArticleTotal(maps interface{}) (int, error) {
 	return count, nil
 }
 
-func GetArticles(pageNum int, pageSize int, maps interface{}) ([]*Article, error) {
+func GetArticles(pageNum int, pageSize int, maps map[string]interface{}) ([]*Article, error) {
 	var articles []*Article
+	maps["deleted_on"] = 0
 	err := db.Where(maps).Offset(pageNum).Limit(pageSize).Order("id desc").Find(&articles).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
@@ -42,7 +44,7 @@ func GetArticles(pageNum int, pageSize int, maps interface{}) ([]*Article, error
 
 func GetArticle(id int) (*Article, error) {
 	var article Article
-	err := db.Where("id = ?", id).First(&article).Error
+	err := db.Where("id = ? AND deleted_on = ?", id, 0).First(&article).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
