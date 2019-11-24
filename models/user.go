@@ -19,16 +19,6 @@ type GithubUser struct {
 	Link    string
 }
 
-func CheckAuth(username, password string) bool {
-	var user User
-	db.Select("id").Where(User{Username: username, Password: password}).First(&user)
-	if user.ID > 0 {
-		return true
-	}
-
-	return false
-}
-
 func AddUser(data map[string]interface{}) error {
 	user := User{
 		Username: data["username"].(string),
@@ -63,6 +53,15 @@ func GetUserTotal(maps map[string]interface{}) (int, error) {
 func GetUser(id int) (*User, error) {
 	var user User
 	err := db.Where("id = ? AND deleted_on = ?", id, 0).First(&user).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+	return &user, err
+}
+
+func GetUserByName(username string) (*User, error) {
+	var user User
+	err := db.Where("username = ? AND deleted_on = ?", username, 0).First(&user).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
