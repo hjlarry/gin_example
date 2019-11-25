@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"gin_example/middleware/jwt"
 	"html/template"
 	"net/http"
 
@@ -44,9 +45,9 @@ func InitRouter() *gin.Engine {
 	r.POST("/api/v1/user/login", api.Auth)
 	r.POST("/api/v1/user/logout", api.LogOut)
 	apiv1 := r.Group("/api/v1")
-	// apiv1.Use(jwt.JWT())
+	apiv1.Use(jwt.JWT())
 	{
-		apiv1.GET("/user/info", api.InfoForTest)
+		apiv1.GET("/user/info", api.GetInfo)
 
 		apiv1.GET("/tags", v1.GetTags)
 		apiv1.DELETE("/tags/:id", v1.DeleteTag)

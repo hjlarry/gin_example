@@ -21,3 +21,12 @@ func (u *User) Auth() bool {
 func (u *User) GetToken() (string, error) {
 	return util.GenerateToken(u.Username, u.Password)
 }
+
+func (u *User) GetInfo() error {
+	claims, err := util.ParseToken(u.Token)
+	if err != nil {
+		return err
+	}
+	u.Username = claims.Username
+	return nil
+}

@@ -10,6 +10,7 @@ type User struct {
 	ID       int
 	PageNum  int
 	PageSize int
+	Token    string
 
 	Username string
 	Email    string
