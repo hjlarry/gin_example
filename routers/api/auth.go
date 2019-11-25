@@ -3,40 +3,31 @@ package api
 import (
 	"net/http"
 
-	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 
 	"gin_example/pkg/app"
 	"gin_example/pkg/e"
-	"gin_example/pkg/logging"
 	"gin_example/service/user_service"
 )
 
-type auth struct {
-	Username string `valid:"Required; MaxSize(50)"`
-	Password string `valid:"Required; MaxSize(50)"`
+type AuthForm struct {
+	Username string `form:"username" valid:"Required; MaxSize(20);MinSize(3)"`
+	Password string `form:"password" valid:"Required; MaxSize(20);MinSize(3)"`
 }
 
 func Auth(c *gin.Context) {
 	appG := app.Gin{C: c}
-	username := c.Query("username")
-	password := c.Query("password")
 
-	valid := validation.Validation{}
-	a := auth{Username: username, Password: password}
-	ok, _ := valid.Valid(&a)
-
-	if !ok {
-		for _, err := range valid.Errors {
-			logging.Info(err.Key, err.Message)
-		}
-		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+	var form AuthForm
+	httpCode, errCode := app.BindAndValid(c, &form)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, nil)
 		return
 	}
 
 	userService := user_service.User{
-		Username: username,
-		Password: password,
+		Username: form.Username,
+		Password: form.Password,
 	}
 
 	if !userService.Auth() {
@@ -59,6 +50,13 @@ func GetInfo(c *gin.Context) {
 	// appG := app.Gin{C: c}
 	// token := c.Query("token")
 
+}
+func LogOut(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"code": 20000,
+		"msg":  "good",
+		"data": nil,
+	})
 }
 
 func InfoForTest(c *gin.Context) {

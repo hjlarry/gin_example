@@ -64,7 +64,7 @@ func GetUsers(c *gin.Context) {
 }
 
 type AddUserForm struct {
-	Username string `form:"username" valid:"Required;MaxSize(20)"`
+	Username string `form:"username" valid:"Required;MaxSize(20);MinSize(3)"`
 	Password string `form:"password" valid:"Required;MaxSize(20);MinSize(3)"`
 	Email    string `form:"email" valid:"Email"`
 	Active   bool   `form:"active"`
