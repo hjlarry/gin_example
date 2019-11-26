@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"gin_example/pkg/app"
 	"net/http"
 	"time"
 
@@ -12,33 +13,23 @@ import (
 
 func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var code int
-		var data interface{}
-
-		code = e.SUCCESS
+		appG := app.Gin{C: c}
 		token := c.Request.Header.Get("X-Token")
 		if token == "" {
-			code = e.INVALID_PARAMS
-		} else {
-			claims, err := util.ParseToken(token)
-			if err != nil {
-				code = e.ERROR_AUTH_CHECK_TOKEN_FAIL
-			} else if time.Now().Unix() > claims.ExpiresAt {
-				code = e.ERROR_AUTH_CHECK_TOKEN_TIMEOUT
-			}
-		}
-
-		if code != e.SUCCESS {
-			c.JSON(http.StatusOK, gin.H{
-				"code": code,
-				"msg":  e.GetMsg(code),
-				"data": data,
-			})
-
-			c.Abort()
+			appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+			appG.C.Abort()
 			return
 		}
-
-		c.Next()
+		claims, err := util.ParseToken(token)
+		if err != nil {
+			appG.Response(http.StatusOK, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
+			return
+		}
+		if time.Now().Unix() > claims.ExpiresAt {
+			appG.Response(http.StatusOK, e.ERROR_AUTH_CHECK_TOKEN_TIMEOUT, nil)
+			return
+		}
+		appG.CurrentUserName = claims.Username
+		appG.C.Next()
 	}
 }

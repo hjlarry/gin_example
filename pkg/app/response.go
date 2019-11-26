@@ -7,7 +7,8 @@ import (
 )
 
 type Gin struct {
-	C *gin.Context
+	C               *gin.Context
+	CurrentUserName string
 }
 
 type Response struct {
