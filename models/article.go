@@ -19,7 +19,7 @@ type Article struct {
 	CoverImageUrl string `json:"cover_image_url"`
 
 	Tags []*Tag `gorm:"-" json:"tags"`
-	User User   `gorm:"-" json:"-"`
+	User *User  `gorm:"-" json:"user"`
 }
 
 func GetArticleTotal(maps map[string]interface{}) (int, error) {
@@ -65,6 +65,7 @@ func AddArticle(data map[string]interface{}) (int, error) {
 		Content:    data["content"].(string),
 		CanComment: data["can_comment"].(bool),
 		Status:     data["status"].(bool),
+		AuthorID:   data["author_id"].(int),
 		Model: Model{
 			CreatedOn: data["created_at"].(*time.Time),
 		},

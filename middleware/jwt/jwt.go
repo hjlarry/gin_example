@@ -29,7 +29,7 @@ func JWT() gin.HandlerFunc {
 			appG.Response(http.StatusOK, e.ERROR_AUTH_CHECK_TOKEN_TIMEOUT, nil)
 			return
 		}
-		appG.CurrentUserName = claims.Username
+		appG.C.Set("current_user", claims.Username)
 		appG.C.Next()
 	}
 }

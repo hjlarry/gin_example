@@ -46,6 +46,10 @@ func (u *User) Get() (*models.User, error) {
 	return models.GetUser(u.ID)
 }
 
+func (u *User) GetByName() (*models.User, error) {
+	return models.GetUserByName(u.Username)
+}
+
 func (u *User) Edit() error {
 	data := map[string]interface{}{
 		"email":  u.Email,

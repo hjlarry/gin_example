@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"gin_example/service/user_service"
 	"github.com/astaxie/beego/validation"
 	"github.com/boombuler/barcode/qr"
 	"github.com/gin-gonic/gin"
@@ -147,7 +148,16 @@ func AddArticle(c *gin.Context) {
 		return
 	}
 
+	currentUserName := c.MustGet("current_user").(string)
+	userService := user_service.User{Username: currentUserName}
+	author, err := userService.GetByName()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_GET_USER_FAIL, nil)
+		return
+	}
+
 	articleService := getArticleService(&form)
+	articleService.AuthorID = author.ID
 	articleId, err := articleService.Add()
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_ARTICLE_FAIL, nil)

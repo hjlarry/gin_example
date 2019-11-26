@@ -23,6 +23,7 @@ type Article struct {
 	Content    string
 	CanComment bool
 	CreatedAt  *time.Time
+	AuthorID   int
 }
 
 func (a *Article) Get() (*models.Article, error) {
@@ -47,7 +48,12 @@ func (a *Article) Get() (*models.Article, error) {
 	if err != nil {
 		return nil, err
 	}
+	user, err := models.GetUser(article.AuthorID)
+	if err != nil {
+		return nil, err
+	}
 	article.Tags = tags
+	article.User = user
 	article.CreatedAt = util.DateFormat(*article.CreatedOn, "2006-01-02 15:04")
 	_ = gredis.Set(key, article, 3600)
 	return article, nil
@@ -80,6 +86,7 @@ func (a *Article) GetAll() ([]*models.Article, error) {
 	for _, a := range articles {
 		a.CreatedAt = util.DateFormat(*a.CreatedOn, "2006-01-02 15:04")
 		a.Tags, _ = models.GetTagsByArticleID(a.ID)
+		a.User, _ = models.GetUser(a.AuthorID)
 	}
 	_ = gredis.Set(key, articles, 3600)
 	return articles, nil
@@ -110,7 +117,9 @@ func (a *Article) getModifyData() map[string]interface{} {
 }
 
 func (a *Article) Add() (int, error) {
-	articleId, err := models.AddArticle(a.getModifyData())
+	modifyData := a.getModifyData()
+	modifyData["author_id"] = a.AuthorID
+	articleId, err := models.AddArticle(modifyData)
 	if err != nil {
 		return -1, err
 	}
