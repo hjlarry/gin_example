@@ -49,6 +49,22 @@ func GetArticle(id int) (*Article, error) {
 		return nil, err
 	}
 	return &article, err
+	//无法将created_at的值通过scanrows放到article的basemodel中的created_at字段，此方案后续再优化
+	//var tags []*Tag
+	//rows, err := db.Raw("select b3.*, b1.* from blog_article as b1 left join blog_article_tag as b2 on b1.id=b2.article_id left join blog_tag as b3 on b2.tag_id=b3.id where b1.id = ?", id).Rows()
+	//if err != nil {
+	//	return nil, err
+	//}
+	//defer rows.Close()
+	//for rows.Next() {
+	//	var tag Tag
+	//	_ = db.ScanRows(rows, &tag)
+	//	_ = db.ScanRows(rows, &article)
+	//	tags = append(tags, &tag)
+	//}
+	//fmt.Printf("%v99", rows)
+	//article.Tags = tags
+	//return &article, nil
 }
 
 func EditArticle(id int, data interface{}) error {

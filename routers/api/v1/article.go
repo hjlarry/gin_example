@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"fmt"
 	"gin_example/service/user_service"
 	"github.com/astaxie/beego/validation"
 	"github.com/boombuler/barcode/qr"
@@ -39,6 +40,7 @@ func GetArticle(c *gin.Context) {
 	articleService := article_service.Article{ID: id}
 	article, err := articleService.Get()
 	if err != nil {
+		fmt.Printf("%v", err)
 		appG.Response(http.StatusOK, e.ERROR_GET_ARTICLE_FAIL, nil)
 		return
 	}
