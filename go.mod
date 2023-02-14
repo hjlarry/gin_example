@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/360EntSecGroup-Skylar/excelize v1.4.1
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
-	github.com/astaxie/beego v1.12.0
+	github.com/astaxie/beego v1.12.2
 	github.com/boombuler/barcode v1.0.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.4.0
@@ -19,8 +19,6 @@ require (
 	github.com/swaggo/swag v1.5.1
 	github.com/tealeg/xlsx v1.0.3
 	github.com/unknwon/com v1.0.1
-	github.com/valyala/quicktemplate v1.4.1
-	golang.org/dl v0.0.0-20191111193948-37d848e6a9e1 // indirect
 	golang.org/x/image v0.0.0-20190910094157-69e4b8554b2a // indirect
 	gopkg.in/ini.v1 v1.47.0 // indirect
 )
