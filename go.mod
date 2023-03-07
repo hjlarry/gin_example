@@ -19,8 +19,6 @@ require (
 	github.com/swaggo/swag v1.5.1
 	github.com/tealeg/xlsx v1.0.3
 	github.com/unknwon/com v1.0.1
-	github.com/valyala/quicktemplate v1.4.1
-	golang.org/dl v0.0.0-20191111193948-37d848e6a9e1 // indirect
-	golang.org/x/image v0.0.0-20190910094157-69e4b8554b2a // indirect
+	golang.org/x/image v0.5.0 // indirect
 	gopkg.in/ini.v1 v1.47.0 // indirect
 )
